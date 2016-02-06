@@ -23,7 +23,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField 'String', 'FIREBASE_ROOT_URL', FirebaseRootUrl
+        buildConfigField 'String', 'FIREBASE_ROOT_URL', FirebaseRootUrl //to be defined in your own gradle.properties
     }
 
     compileOptions {
@@ -33,8 +33,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField 'String', 'FIREBASE_TEST_EMAIL', FirebaseTestEmail
-            buildConfigField 'String', 'FIREBASE_TEST_PW', FirebaseTestPw
+            buildConfigField 'String', 'FIREBASE_TEST_EMAIL', FirebaseTestEmail //to be defined in your own gradle.properties
+            buildConfigField 'String', 'FIREBASE_TEST_PW', FirebaseTestPw //to be defined in your own gradle.properties
         }
         release {
             minifyEnabled false
