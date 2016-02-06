@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Could app</string>
+    <string name="action_settings">Settings</string>
+    <string name="hint_enter_email">Enter email</string>
+    <string name="hint_enter_password">Enter password</string>
+    <string name="button_signin_with_password">Sign in</string>
+    <string name="text_dont_have_account">Don\'t have an account?</string>
+    <string name="button_create_account">Sign Up</string>
+    <string name="hint_enter_username">Enter username</string>
+    <string name="title_activity_create_account">Create account</string>
+    <string name="text_already_have_account">Already have an account?</string>
+    <string name="button_sign_in">Sign in</string>
+    <string name="progress_dialog_loading">Loading...</string>
+    <string name="progress_dialog_check_inbox">Sending email with password... Please check your inbox shortly.</string>
+    <string name="error_email_taken">The email is already taken.</string>
+    <string name="error_invalid_email_not_valid">%s is not a valid email</string>
+    <string name="error_cannot_be_empty">This cannot be empty.</string>
+    <string name="progress_dialog_authenticating_with_firebase">Authenticating with Firebase…</string>
+    <string name="error_message_email_issue">There was an error with your email; please check that you entered it correctly.</string>
+    <string name="error_message_failed_sign_in_no_network">There was a problem with the network connection.\nAre you sure you\'re connected to the internet?</string>
+
+    <string name="log_message_auth_successful">auth successful.</string>
+    <string name="password_will_be_sent_via_email">*The email will be used to confirm your account.</string>
+</resources>
