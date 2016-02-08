@@ -11,6 +11,9 @@ final FIREBBASE_UI_VERSION = '0.3.0'
 final BUTTER_KNIFE_VERSION = '7.0.1'
 final FIREBASE_CLIENT_VERSION = '2.3.1'
 final ANDROID_SUPPORT_VERSION = '23.1.1'
+final PW_EDIT_TEXT_VERSION = 'v0.4'
+final GLASS_FISH_ANNOTATIONS_VERSION = '10.0-b28'
+final RX_FIREBASE = '1.0.0'
 
 android {
     compileSdkVersion 23
@@ -55,12 +58,14 @@ dependencies {
 
     compile "com.google.dagger:dagger:${DAGGER_VERSION}"
     apt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
-    compile 'org.glassfish:javax.annotation:10.0-b28'
+    compile "org.glassfish:javax.annotation:${GLASS_FISH_ANNOTATIONS_VERSION}"
 
     compile "io.reactivex:rxandroid:${RX_ANDROID_VERSION}"
     compile "io.reactivex:rxjava:${RX_JAVA_VERSION}"
 
     compile "com.firebase:firebase-client-android:${FIREBASE_CLIENT_VERSION}"
-    compile 'com.soikonomakis:rxfirebase:1.0.0'
+    compile "com.soikonomakis:rxfirebase:${RX_FIREBASE}"
     compile "com.firebaseui:firebase-ui:${FIREBBASE_UI_VERSION}"
+
+    compile "com.github.maksim88:PasswordEditText:${PW_EDIT_TEXT_VERSION}"
 }

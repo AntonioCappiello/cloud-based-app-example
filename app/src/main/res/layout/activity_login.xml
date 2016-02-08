@@ -52,7 +52,7 @@
             android:layout_marginBottom="@dimen/margin_normal"
             app:hintTextAppearance="@style/HintText">
 
-            <EditText
+            <com.maksim88.passwordedittext.PasswordEditText
                 android:id="@+id/edit_text_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
