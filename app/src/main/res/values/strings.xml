@@ -21,4 +21,5 @@
 
     <string name="log_message_auth_successful">auth successful.</string>
     <string name="password_will_be_sent_via_email">*The email will be used to confirm your account.</string>
+    <string name="action_log_out">Logout</string>
 </resources>

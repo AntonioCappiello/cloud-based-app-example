@@ -10,6 +10,7 @@ package com.antoniocappiello.cloudapp.presenter.injector;
 import android.content.Context;
 
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.antoniocappiello.cloudapp.view.list.ItemListActivity;
 import com.antoniocappiello.cloudapp.view.login.CreateAccountActivity;
 import com.antoniocappiello.cloudapp.view.login.LoginActivity;
@@ -20,9 +21,10 @@ import dagger.Component;
 @Component(modules = AppModule.class)
 public interface AppComponent {
 
-    void inject(LoginActivity baseActivity);
-    void inject(CreateAccountActivity baseActivity);
-    void inject(ItemListActivity baseActivity);
+    void inject(BaseActivity activity);
+    void inject(CreateAccountActivity activity);
+    void inject(ItemListActivity activity);
+    void inject(LoginActivity activity);
 
     @AppScope
     Context appContext();

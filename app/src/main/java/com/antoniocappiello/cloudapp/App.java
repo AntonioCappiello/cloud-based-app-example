@@ -38,7 +38,7 @@ public class App extends Application{
 
     private void initLogger() {
         Logger.init()
-                .setMethodCount(1)
+                .setMethodCount(2)
                 .hideThreadInfo()
                 .setLogLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE);
     }

@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.presenter.command.OnAuthFailed;
+import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
 import com.antoniocappiello.cloudapp.view.list.ItemViewHolder;
 
@@ -23,13 +23,13 @@ public interface BackendAdapter<T> {
 
     void cleanup();
 
-    void addAuthStateListener(ProgressDialog signInProgressDialog, Command onAuthSucceeded);
+    void addAuthStateListener(Command onAuthenticated, Command onUnAuthenticated);
 
     void removeAuthStateListener();
 
     void signIn(String email, String password, ProgressDialog signInProgressDialog, Command onAuthSucceeded, Command onAuthFailed);
 
-    void signOut();
+    void logOut();
 
-    void createUser(Account account, ProgressDialog signUpProgressDialog, OnAuthFailed onAuthFailed, OnSignUpSucceeded onSignUpSucceeded);
+    void createUser(Account account, ProgressDialog signUpProgressDialog, OnSignInFailed onSignInFailed, OnSignUpSucceeded onSignUpSucceeded);
 }
