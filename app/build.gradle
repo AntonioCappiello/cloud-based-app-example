@@ -31,11 +31,19 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildTypes {
-        debug {
+    productFlavors {
+        dev {
+            applicationId "com.antoniocappiello.cloudapp.dev"
             buildConfigField 'String', 'FIREBASE_TEST_EMAIL', FirebaseTestEmail //to be defined in your own gradle.properties
             buildConfigField 'String', 'FIREBASE_TEST_PW', FirebaseTestPw //to be defined in your own gradle.properties
         }
+        prod {
+            buildConfigField 'String', 'FIREBASE_TEST_EMAIL', '""' //empty string
+            buildConfigField 'String', 'FIREBASE_TEST_PW', '""' //empty string
+        }
+    }
+
+    buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
