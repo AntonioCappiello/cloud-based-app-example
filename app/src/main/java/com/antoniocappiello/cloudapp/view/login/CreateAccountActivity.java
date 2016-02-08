@@ -52,7 +52,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     @OnClick(R.id.button_create_account)
     public void createUser() {
         String userEmail, userName;
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.FLAVOR.equalsIgnoreCase("dev")) {
             userName = userEmail = BuildConfig.FIREBASE_TEST_EMAIL;
             Logger.e(userEmail + "\n" + userName);
         }

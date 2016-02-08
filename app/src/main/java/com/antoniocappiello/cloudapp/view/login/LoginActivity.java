@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signInWithEmailAndPassword() {
         String email, password;
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.FLAVOR.equalsIgnoreCase("dev")) {
             email = BuildConfig.FIREBASE_TEST_EMAIL;
             password = BuildConfig.FIREBASE_TEST_PW;
             Logger.e(email + "\n" + password);
