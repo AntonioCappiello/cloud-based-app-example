@@ -18,4 +18,4 @@ FirebaseRootUrl = "https://[YOUR FIREBASE APP NAME AS IN THE DASHBORAD].firebase
 FirebaseTestEmail = "[yourtestmail@mail.com]"
 FirebaseTestPw = "[yourtestpw]"
 ```
-The *FirebaseTestEmail* and *FirebaseTestPw* are used only to facilitate the login to Firebase with a known account in the debug product type. 
+The *FirebaseTestEmail* and *FirebaseTestPw* are used only to facilitate the login to Firebase with a known account and to avoid to fill in the username and password. Those two variables are used only in the *dev* product flavor.
