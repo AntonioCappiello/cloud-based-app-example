@@ -27,6 +27,7 @@ import com.orhanobut.logger.Logger;
 import com.pixplicity.easyprefs.library.Prefs;
 import com.soikonomakis.rxfirebase.RxFirebase;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,9 +59,16 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void add(Item item) {
-        refList.push().setValue(item);
-        Logger.d(item.toString());
+    public void addItemToUserList(String userEmail, Item item) {
+        Logger.d(userEmail + "\n" + item.toString());
+        if(userEmail == null || userEmail.isEmpty() || item==null) {
+            throw new InvalidParameterException("Invalid arguments\n" +
+                    "user email = " + userEmail +
+                    "\nitem = " + item.toString());
+        }
+
+        Firebase refUserList = refList.child(Utils.encodeEmail(userEmail));
+        refUserList.push().setValue(item);
     }
 
     @Override
@@ -74,9 +82,16 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public RecyclerView.Adapter<ItemViewHolder> getItemRecyclerViewAdapter() {
-        if(mAdapter == null){
-            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refList) {
+    public RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList(String userEmail) {
+        Logger.d(userEmail);
+        if(userEmail == null || userEmail.isEmpty()) {
+            throw new InvalidParameterException("Invalid argument\n" +
+                    "user email = " + userEmail);
+        }
+
+        Firebase refUserList = refList.child(Utils.encodeEmail(userEmail));
+        if (mAdapter == null) {
+            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
                 @Override
                 public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
                     itemViewHolder.getNameTextView().setText(item.getItemName());
@@ -114,6 +129,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
         Firebase.AuthResultHandler authenticationResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
+                Prefs.putString(Constants.KEY_SIGNUP_EMAIL, email);
                 authProgressDialog.dismiss();
                 onAuthSucceeded.execute();
             }

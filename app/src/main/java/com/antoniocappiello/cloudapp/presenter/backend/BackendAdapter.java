@@ -15,11 +15,11 @@ import rx.Observable;
 
 public interface BackendAdapter<T> {
 
-    void add(T item);
+    void addItemToUserList(String userEmail, T item);
 
     Observable<List<T>> readItems();
 
-    RecyclerView.Adapter<ItemViewHolder> getItemRecyclerViewAdapter();
+    RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList(String userEmail);
 
     void cleanup();
 
