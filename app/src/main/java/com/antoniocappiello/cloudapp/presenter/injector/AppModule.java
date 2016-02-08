@@ -35,5 +35,4 @@ public class AppModule {
         return new FirebaseBackendAdapter(context);
     }
 
-
 }

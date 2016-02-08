@@ -13,6 +13,7 @@ import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.orhanobut.logger.Logger;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class ItemListActivity extends AppCompatActivity {
+public class ItemListActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -70,29 +71,7 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mBackendAdapter.cleanup();
     }

@@ -11,7 +11,7 @@ import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.presenter.command.OnAuthFailed;
+import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
 import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.view.list.ItemViewHolder;
@@ -108,20 +108,29 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void addAuthStateListener(ProgressDialog authProgressDialog, Command onAuthSucceeded) {
+    public void addAuthStateListener(Command onAuthenticated, Command onUnAuthenticated) {
         mAuthStateListener = authData -> {
-            authProgressDialog.dismiss();
-            if (authData != null) {
-                onAuthSucceeded.execute();
+            if (authData == null) {
+                Logger.d("unauthenticated");
+                if(onUnAuthenticated != null) {
+                    onUnAuthenticated.execute();
+                }
+            }
+            else {
+                Logger.d("authenticated");
+                if(onAuthenticated != null) {
+                    onAuthenticated.execute();
+                }
             }
         };
-        authProgressDialog.show();
         refRoot.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     public void removeAuthStateListener() {
-        refRoot.removeAuthStateListener(mAuthStateListener);
+        if(mAuthStateListener!=null) {
+            refRoot.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     @Override
@@ -145,7 +154,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void createUser(Account account, ProgressDialog signUpProgressDialog, OnAuthFailed onAuthFailed, OnSignUpSucceeded onSignUpSucceeded) {
+    public void createUser(Account account, ProgressDialog signUpProgressDialog, OnSignInFailed onSignInFailed, OnSignUpSucceeded onSignUpSucceeded) {
         signUpProgressDialog.show();
         refRoot.createUser(account.getUserEmail(), account.getPassword(), new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
@@ -157,7 +166,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
             public void onError(FirebaseError firebaseError) {
                 Logger.e(firebaseError.toString());
                 signUpProgressDialog.dismiss();
-                onAuthFailed.execute(firebaseError.getMessage());
+                onSignInFailed.execute(firebaseError.getMessage());
 
             }
         });
@@ -208,7 +217,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
                     // Try just making a uid mapping
                     refUidMapping.child(authUserId).setValue(encodedEmail);
                 }
-                signOut();
+                logOut();
             }
         });
 
@@ -235,7 +244,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void signOut() {
+    public void logOut() {
         refRoot.unauth();
     }
 

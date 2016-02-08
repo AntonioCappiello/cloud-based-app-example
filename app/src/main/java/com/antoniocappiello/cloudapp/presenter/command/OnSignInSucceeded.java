@@ -5,11 +5,11 @@ import android.content.Intent;
 
 import com.antoniocappiello.cloudapp.view.list.ItemListActivity;
 
-public class OnAuthSucceeded implements Command{
+public class OnSignInSucceeded implements Command{
 
     private final Activity mActivity;
 
-    public OnAuthSucceeded(Activity activity) {
+    public OnSignInSucceeded(Activity activity) {
         mActivity = activity;
     }
 

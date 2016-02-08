@@ -3,11 +3,11 @@ package com.antoniocappiello.cloudapp.presenter.command;
 import android.app.Activity;
 import android.widget.Toast;
 
-public class OnAuthFailed implements Command{
+public class OnSignInFailed implements Command{
 
     private final Activity mActivity;
 
-    public OnAuthFailed(Activity activity) {
+    public OnSignInFailed(Activity activity) {
         mActivity = activity;
     }
 
