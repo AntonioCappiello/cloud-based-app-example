@@ -11,7 +11,7 @@ import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.presenter.command.OnAuthFailed;
+import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
 import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.view.list.ItemViewHolder;
@@ -27,6 +27,7 @@ import com.orhanobut.logger.Logger;
 import com.pixplicity.easyprefs.library.Prefs;
 import com.soikonomakis.rxfirebase.RxFirebase;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,9 +59,16 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void add(Item item) {
-        refList.push().setValue(item);
-        Logger.d(item.toString());
+    public void addItemToUserList(String userEmail, Item item) {
+        Logger.d(userEmail + "\n" + item.toString());
+        if(userEmail == null || userEmail.isEmpty() || item==null) {
+            throw new InvalidParameterException("Invalid arguments\n" +
+                    "user email = " + userEmail +
+                    "\nitem = " + item.toString());
+        }
+
+        Firebase refUserList = refList.child(Utils.encodeEmail(userEmail));
+        refUserList.push().setValue(item);
     }
 
     @Override
@@ -74,9 +82,16 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public RecyclerView.Adapter<ItemViewHolder> getItemRecyclerViewAdapter() {
-        if(mAdapter == null){
-            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refList) {
+    public RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList(String userEmail) {
+        Logger.d(userEmail);
+        if(userEmail == null || userEmail.isEmpty()) {
+            throw new InvalidParameterException("Invalid argument\n" +
+                    "user email = " + userEmail);
+        }
+
+        Firebase refUserList = refList.child(Utils.encodeEmail(userEmail));
+        if (mAdapter == null) {
+            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
                 @Override
                 public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
                     itemViewHolder.getNameTextView().setText(item.getItemName());
@@ -93,20 +108,29 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void addAuthStateListener(ProgressDialog authProgressDialog, Command onAuthSucceeded) {
+    public void addAuthStateListener(Command onAuthenticated, Command onUnAuthenticated) {
         mAuthStateListener = authData -> {
-            authProgressDialog.dismiss();
-            if (authData != null) {
-                onAuthSucceeded.execute();
+            if (authData == null) {
+                Logger.d("unauthenticated");
+                if(onUnAuthenticated != null) {
+                    onUnAuthenticated.execute();
+                }
+            }
+            else {
+                Logger.d("authenticated");
+                if(onAuthenticated != null) {
+                    onAuthenticated.execute();
+                }
             }
         };
-        authProgressDialog.show();
         refRoot.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     public void removeAuthStateListener() {
-        refRoot.removeAuthStateListener(mAuthStateListener);
+        if(mAuthStateListener!=null) {
+            refRoot.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     @Override
@@ -114,6 +138,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
         Firebase.AuthResultHandler authenticationResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
+                Prefs.putString(Constants.KEY_SIGNUP_EMAIL, email);
                 authProgressDialog.dismiss();
                 onAuthSucceeded.execute();
             }
@@ -129,7 +154,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void createUser(Account account, ProgressDialog signUpProgressDialog, OnAuthFailed onAuthFailed, OnSignUpSucceeded onSignUpSucceeded) {
+    public void createUser(Account account, ProgressDialog signUpProgressDialog, OnSignInFailed onSignInFailed, OnSignUpSucceeded onSignUpSucceeded) {
         signUpProgressDialog.show();
         refRoot.createUser(account.getUserEmail(), account.getPassword(), new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
@@ -141,7 +166,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
             public void onError(FirebaseError firebaseError) {
                 Logger.e(firebaseError.toString());
                 signUpProgressDialog.dismiss();
-                onAuthFailed.execute(firebaseError.getMessage());
+                onSignInFailed.execute(firebaseError.getMessage());
 
             }
         });
@@ -192,7 +217,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
                     // Try just making a uid mapping
                     refUidMapping.child(authUserId).setValue(encodedEmail);
                 }
-                signOut();
+                logOut();
             }
         });
 
@@ -219,7 +244,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     }
 
     @Override
-    public void signOut() {
+    public void logOut() {
         refRoot.unauth();
     }
 

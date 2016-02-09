@@ -10,8 +10,10 @@ import android.view.MenuItem;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
+import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.orhanobut.logger.Logger;
 
 import java.util.Date;
@@ -24,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class ItemListActivity extends AppCompatActivity {
+public class ItemListActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -49,7 +51,7 @@ public class ItemListActivity extends AppCompatActivity {
     private void initRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mBackendAdapter.getItemRecyclerViewAdapter());
+        mRecyclerView.setAdapter(mBackendAdapter.getRecyclerViewAdapterForUserItemList(Utils.getCurrentUserEmail()));
     }
 
     private void loadData() {
@@ -65,33 +67,11 @@ public class ItemListActivity extends AppCompatActivity {
     @OnClick(R.id.fab)
     public void addItem(){
         Item item = new Item("DUMMY NAME", new Date(System.currentTimeMillis()).toString()); // dummy data
-        mBackendAdapter.add(item);
+        mBackendAdapter.addItemToUserList(Utils.getCurrentUserEmail(), item);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mBackendAdapter.cleanup();
     }

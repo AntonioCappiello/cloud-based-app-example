@@ -11,8 +11,9 @@ import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
-import com.antoniocappiello.cloudapp.presenter.command.OnAuthFailed;
+import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
+import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.antoniocappiello.cloudapp.view.DialogFactory;
 import com.orhanobut.logger.Logger;
 
@@ -22,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class CreateAccountActivity extends BaseActivity {
 
     @Bind(R.id.edit_text_username_create)
     EditText mEditTextUsernameCreate;
@@ -52,7 +53,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     @OnClick(R.id.button_create_account)
     public void createUser() {
         String userEmail, userName;
-        if(BuildConfig.DEBUG) {
+        if(BuildConfig.FLAVOR.equalsIgnoreCase("dev")) {
             userName = userEmail = BuildConfig.FIREBASE_TEST_EMAIL;
             Logger.e(userEmail + "\n" + userName);
         }
@@ -67,7 +68,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         Account account = new Account(userName, userEmail, password);
 
-        mBackendAdapter.createUser(account, DialogFactory.getSignUpProgressDialog(this), new OnAuthFailed(this), new OnSignUpSucceeded(this));
+        mBackendAdapter.createUser(account, DialogFactory.getSignUpProgressDialog(this), new OnSignInFailed(this), new OnSignUpSucceeded(this));
 
     }
 
