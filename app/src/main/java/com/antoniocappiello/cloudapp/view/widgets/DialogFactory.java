@@ -1,4 +1,4 @@
-package com.antoniocappiello.cloudapp.view;
+package com.antoniocappiello.cloudapp.view.widgets;
 
 import android.app.ProgressDialog;
 import android.content.Context;
