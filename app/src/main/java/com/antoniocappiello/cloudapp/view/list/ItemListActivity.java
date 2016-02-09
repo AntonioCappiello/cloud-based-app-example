@@ -14,6 +14,7 @@ import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
+import com.antoniocappiello.cloudapp.view.widgets.DialogFactory;
 import com.orhanobut.logger.Logger;
 
 import java.util.Date;
@@ -66,8 +67,9 @@ public class ItemListActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void addItem(){
-        Item item = new Item("DUMMY NAME", new Date(System.currentTimeMillis()).toString()); // dummy data
-        mBackendAdapter.addItemToUserList(Utils.getCurrentUserEmail(), item);
+        DialogFactory.getAddItemDialog(this).show();
+//        Item item = new Item("DUMMY NAME", new Date(System.currentTimeMillis()).toString()); // dummy data
+//        mBackendAdapter.addItemToUserList(Utils.getCurrentUserEmail(), item);
     }
 
     @Override
