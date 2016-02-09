@@ -2,7 +2,6 @@ package com.antoniocappiello.cloudapp.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import com.antoniocappiello.cloudapp.App;
@@ -14,7 +13,7 @@ import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
-import com.antoniocappiello.cloudapp.view.DialogFactory;
+import com.antoniocappiello.cloudapp.view.widgets.DialogFactory;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;

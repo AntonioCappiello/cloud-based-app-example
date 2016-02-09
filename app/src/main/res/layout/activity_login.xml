@@ -31,7 +31,7 @@
             android:layout_marginBottom="@dimen/lists_title_bottom_margin"
             app:hintTextAppearance="@style/HintText">
 
-            <EditText
+            <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
                 android:id="@+id/edit_text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
