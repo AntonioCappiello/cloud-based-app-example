@@ -14,6 +14,8 @@ final ANDROID_SUPPORT_VERSION = '23.1.1'
 final PW_EDIT_TEXT_VERSION = 'v0.4'
 final GLASS_FISH_ANNOTATIONS_VERSION = '10.0-b28'
 final RX_FIREBASE = '1.0.0'
+final GSON_VERSION = '2.4'
+final EVENTBUS_VERSION = '3.0.0'
 
 android {
     compileSdkVersion 23
@@ -76,4 +78,8 @@ dependencies {
     compile "com.firebaseui:firebase-ui:${FIREBBASE_UI_VERSION}"
 
     compile "com.github.maksim88:PasswordEditText:${PW_EDIT_TEXT_VERSION}"
+
+    compile "com.google.code.gson:gson:${GSON_VERSION}"
+    compile "org.greenrobot:eventbus:${EVENTBUS_VERSION}"
+
 }

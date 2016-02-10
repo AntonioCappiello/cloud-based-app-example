@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.presenter.event.EditItemEvent;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
+import com.firebase.client.core.view.Event;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -43,6 +50,18 @@ public class ItemListActivity extends BaseActivity {
         //loadData();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
     private void initRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,5 +85,13 @@ public class ItemListActivity extends BaseActivity {
     public void onDestroy() {
         super.onDestroy();
         mBackendAdapter.cleanup();
+    }
+
+    @Subscribe
+    public void onEvent(EditItemEvent editItemEvent){
+        EditItemDialogFragment dialog = EditItemDialogFragment.newInstance(
+                editItemEvent.getItemId(),
+                editItemEvent.getItem());
+        dialog.show(getFragmentManager(), "EditItemDialogFragment");
     }
 }

@@ -11,6 +11,7 @@ import android.content.Context;
 
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
+import com.antoniocappiello.cloudapp.view.list.EditItemDialogFragment;
 import com.antoniocappiello.cloudapp.view.list.ItemListActivity;
 import com.antoniocappiello.cloudapp.view.login.CreateAccountActivity;
 import com.antoniocappiello.cloudapp.view.login.LoginActivity;
@@ -30,6 +31,7 @@ public interface AppComponent {
     void inject(ItemListActivity activity);
     void inject(LoginActivity activity);
     void inject(AddItemDialogFragment addItemDialogFragment);
+    void inject(EditItemDialogFragment editItemDialogFragment);
 
     @AppScope
     Context appContext();

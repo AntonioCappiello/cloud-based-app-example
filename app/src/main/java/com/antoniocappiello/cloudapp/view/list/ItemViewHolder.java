@@ -5,11 +5,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.antoniocappiello.cloudapp.R;
+import com.antoniocappiello.cloudapp.model.Item;
+import com.antoniocappiello.cloudapp.presenter.event.EditItemEvent;
+import com.firebase.client.Firebase;
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ItemViewHolder extends RecyclerView.ViewHolder{
+public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     @Bind(R.id.name)
     TextView mNameTextView;
@@ -20,20 +26,26 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
     @Bind(R.id.description)
     TextView mDescriptionTextView;
 
+    private Item mItem;
+    private String mItemId;
+
     public ItemViewHolder(View itemView){
         super(itemView);
         ButterKnife.bind(this, itemView);
+        itemView.setOnClickListener(this);
     }
 
-    public TextView getNameTextView() {
-        return mNameTextView;
+    public void updateView(String itemId, Item item) {
+        mItemId = itemId;
+        mItem = item;
+        mNameTextView.setText(item.getName());
+        mDescriptionTextView.setText(item.getDescription());
+        mTimestampTextView.setText(item.getTimestamp());
     }
 
-    public TextView getTimestampTextView() {
-        return mTimestampTextView;
-    }
-
-    public TextView getDescriptionTextView() {
-        return mDescriptionTextView;
+    @Override
+    public void onClick(View v) {
+        Logger.d("clicked " + mItem.getName());
+        EventBus.getDefault().post(new EditItemEvent(mItemId, mItem));
     }
 }
