@@ -12,6 +12,8 @@ import android.content.Context;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.presenter.backend.FirebaseBackendAdapter;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -31,6 +33,7 @@ public class AppModule {
     }
 
     @Provides
+    @Singleton
     public BackendAdapter provideBackendAdapter() {
         return new FirebaseBackendAdapter(context);
     }

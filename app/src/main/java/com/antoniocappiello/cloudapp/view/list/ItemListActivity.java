@@ -1,22 +1,17 @@
 package com.antoniocappiello.cloudapp.view.list;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.orhanobut.logger.Logger;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,7 +46,7 @@ public class ItemListActivity extends BaseActivity {
     private void initRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mBackendAdapter.getRecyclerViewAdapterForUserItemList(Utils.getCurrentUserEmail()));
+        mRecyclerView.setAdapter(mBackendAdapter.getRecyclerViewAdapterForUserItemList());
     }
 
     private void loadData() {
@@ -59,15 +54,12 @@ public class ItemListActivity extends BaseActivity {
             for(Item item: items)
                 Logger.d(item.toString());
         };
-
         mBackendAdapter.readItems().subscribe(updateViewAction);
     }
 
-
     @OnClick(R.id.fab)
     public void addItem(){
-        Item item = new Item("DUMMY NAME", new Date(System.currentTimeMillis()).toString()); // dummy data
-        mBackendAdapter.addItemToUserList(Utils.getCurrentUserEmail(), item);
+        new AddItemDialogFragment().show(getFragmentManager(), "AddItemDialogFragment");
     }
 
     @Override

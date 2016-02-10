@@ -13,7 +13,7 @@ import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
-import com.antoniocappiello.cloudapp.view.widgets.DialogFactory;
+import com.antoniocappiello.cloudapp.view.widgets.ProgressDialogFactory;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -67,7 +67,7 @@ public class CreateAccountActivity extends BaseActivity {
 
         Account account = new Account(userName, userEmail, password);
 
-        mBackendAdapter.createUser(account, DialogFactory.getSignUpProgressDialog(this), new OnSignInFailed(this), new OnSignUpSucceeded(this));
+        mBackendAdapter.createUser(account, ProgressDialogFactory.getSignUpProgressDialog(this), new OnSignInFailed(this), new OnSignUpSucceeded(this));
 
     }
 

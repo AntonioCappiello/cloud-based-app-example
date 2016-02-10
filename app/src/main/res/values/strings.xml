@@ -22,4 +22,9 @@
     <string name="log_message_auth_successful">auth successful.</string>
     <string name="password_will_be_sent_via_email">*The email will be used to confirm your account.</string>
     <string name="action_log_out">Logout</string>
+    <string name="hint_enter_item_name">Enter Item name</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="hint_enter_item_description">Enter Item description</string>
+    <string name="add_new_item">Add new Item</string>
 </resources>

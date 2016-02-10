@@ -15,11 +15,11 @@ import rx.Observable;
 
 public interface BackendAdapter<T> {
 
-    void addItemToUserList(String userEmail, T item);
+    void addItemToUserList(T item);
 
     Observable<List<T>> readItems();
 
-    RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList(String userEmail);
+    RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList();
 
     void cleanup();
 
@@ -32,4 +32,6 @@ public interface BackendAdapter<T> {
     void logOut();
 
     void createUser(Account account, ProgressDialog signUpProgressDialog, OnSignInFailed onSignInFailed, OnSignUpSucceeded onSignUpSucceeded);
+
+    String getCurrentUserEmail();
 }
