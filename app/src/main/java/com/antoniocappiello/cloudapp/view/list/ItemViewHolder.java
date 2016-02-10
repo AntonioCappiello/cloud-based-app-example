@@ -17,6 +17,9 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
     @Bind(R.id.timestamp)
     TextView mTimestampTextView;
 
+    @Bind(R.id.description)
+    TextView mDescriptionTextView;
+
     public ItemViewHolder(View itemView){
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -28,5 +31,9 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
 
     public TextView getTimestampTextView() {
         return mTimestampTextView;
+    }
+
+    public TextView getDescriptionTextView() {
+        return mDescriptionTextView;
     }
 }

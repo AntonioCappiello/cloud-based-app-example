@@ -10,15 +10,13 @@ import android.widget.EditText;
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.presenter.command.Command;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
 import com.antoniocappiello.cloudapp.presenter.command.OnSignInSucceeded;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
-import com.antoniocappiello.cloudapp.view.widgets.DialogFactory;
+import com.antoniocappiello.cloudapp.view.widgets.ProgressDialogFactory;
 import com.orhanobut.logger.Logger;
-import com.pixplicity.easyprefs.library.Prefs;
 
 import javax.inject.Inject;
 
@@ -49,7 +47,7 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
         ((App) getApplication()).appComponent().inject(this);
         initPasswordInputListener();
-        mAuthProgressDialog = DialogFactory.getSignInProgressDialog(this);
+        mAuthProgressDialog = ProgressDialogFactory.getSignInProgressDialog(this);
         mOnSignInSucceeded = new OnSignInSucceeded(this);
         mOnSignInFailed = new OnSignInFailed(this);
     }
@@ -77,9 +75,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void showEmailIfAlreadyEntered() {
-        String signupEmail = Prefs.getString(Constants.KEY_SIGNUP_EMAIL, null);
-        if (signupEmail != null) {
-            mEditTextEmailInput.setText(signupEmail);
+        String userEmail = mBackendAdapter.getCurrentUserEmail();
+        if (userEmail != null && !userEmail.isEmpty()) {
+            mEditTextEmailInput.setText(userEmail);
         }
     }
 

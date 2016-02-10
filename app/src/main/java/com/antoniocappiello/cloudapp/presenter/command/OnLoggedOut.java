@@ -10,7 +10,6 @@ package com.antoniocappiello.cloudapp.presenter.command;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.antoniocappiello.cloudapp.presenter.command.Command;
 import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.antoniocappiello.cloudapp.view.login.LoginActivity;
 

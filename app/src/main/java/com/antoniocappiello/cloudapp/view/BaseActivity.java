@@ -7,7 +7,6 @@
 
 package com.antoniocappiello.cloudapp.view;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -16,9 +15,6 @@ import android.view.MenuItem;
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
-import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignInSucceeded;
 import com.antoniocappiello.cloudapp.presenter.command.OnLoggedOut;
 import com.antoniocappiello.cloudapp.view.login.CreateAccountActivity;
 import com.antoniocappiello.cloudapp.view.login.LoginActivity;

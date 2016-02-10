@@ -14,10 +14,14 @@ import com.antoniocappiello.cloudapp.view.BaseActivity;
 import com.antoniocappiello.cloudapp.view.list.ItemListActivity;
 import com.antoniocappiello.cloudapp.view.login.CreateAccountActivity;
 import com.antoniocappiello.cloudapp.view.login.LoginActivity;
+import com.antoniocappiello.cloudapp.view.list.AddItemDialogFragment;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
 @AppScope
+@Singleton
 @Component(modules = AppModule.class)
 public interface AppComponent {
 
@@ -25,10 +29,12 @@ public interface AppComponent {
     void inject(CreateAccountActivity activity);
     void inject(ItemListActivity activity);
     void inject(LoginActivity activity);
+    void inject(AddItemDialogFragment addItemDialogFragment);
 
     @AppScope
     Context appContext();
 
+    @Singleton
     BackendAdapter backendAdapter();
 
 }
