@@ -2,7 +2,9 @@ package com.antoniocappiello.cloudapp.presenter.backend;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.Constants;
@@ -104,9 +106,7 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
             mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
                 @Override
                 public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
-                    itemViewHolder.getNameTextView().setText(item.getName());
-                    itemViewHolder.getTimestampTextView().setText(item.getTimestamp());
-                    itemViewHolder.getDescriptionTextView().setText(item.getDescription());
+                    itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
                 }
             };
         }
@@ -187,6 +187,16 @@ public class FirebaseBackendAdapter implements BackendAdapter<Item> {
     @Override
     public String getCurrentUserEmail() {
         return mCurrentUserEmail;
+    }
+
+    @Override
+    public void updateItemInUserList(String itemId, Item item) {
+        Logger.d("updating " + item.toString());
+        if(isEmailValid()) {
+            refList.child(Utils.encodeEmail(mCurrentUserEmail))
+                    .child(itemId)
+                    .setValue(item);
+        }
     }
 
     private void sendConfirmationEmailWithNewPassword(Map<String, Object> result, Account account, ProgressDialog signUpProgressDialog, Command onSignUpSucceeded) {
