@@ -1,9 +1,9 @@
-package com.antoniocappiello.cloudapp.presenter.command;
+package com.antoniocappiello.cloudapp.service.action;
 
 import android.app.Activity;
 import android.widget.Toast;
 
-public class OnSignInFailed implements Command{
+public class OnSignInFailed implements Action {
 
     private final Activity mActivity;
 

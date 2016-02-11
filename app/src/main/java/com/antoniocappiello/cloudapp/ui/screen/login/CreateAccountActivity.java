@@ -1,20 +1,19 @@
-package com.antoniocappiello.cloudapp.view.login;
+package com.antoniocappiello.cloudapp.ui.screen.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.Utils;
 import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignUpSucceeded;
-import com.antoniocappiello.cloudapp.view.BaseActivity;
-import com.antoniocappiello.cloudapp.view.DialogFactory;
+import com.antoniocappiello.cloudapp.service.action.OnSignInFailed;
+import com.antoniocappiello.cloudapp.service.action.OnSignUpSucceeded;
+import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.service.utils.PasswordGenerator;
+import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
+import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -61,14 +60,14 @@ public class CreateAccountActivity extends BaseActivity {
             userEmail = mEditTextEmailCreate.getText().toString();
             userName = mEditTextUsernameCreate.getText().toString();
         }
-        String password = Utils.generateRandomPassword();
+        String password = PasswordGenerator.generateRandomPassword();
 
         if (!isEmailValid(userEmail) || !isUserNameValid(userName))
             return;
 
         Account account = new Account(userName, userEmail, password);
 
-        mBackendAdapter.createUser(account, DialogFactory.getSignUpProgressDialog(this), new OnSignInFailed(this), new OnSignUpSucceeded(this));
+        mBackendAdapter.createUser(account, ProgressDialogFactory.getSignUpProgressDialog(this), new OnSignInFailed(this), new OnSignUpSucceeded(this));
 
     }
 

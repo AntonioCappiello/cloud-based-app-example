@@ -1,11 +1,11 @@
-package com.antoniocappiello.cloudapp.view;
+package com.antoniocappiello.cloudapp.ui.customwidget;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.antoniocappiello.cloudapp.R;
 
-public class DialogFactory {
+public class ProgressDialogFactory {
     public static ProgressDialog getSignInProgressDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(context.getString(R.string.progress_dialog_loading));

@@ -5,12 +5,9 @@
  * Last modified 1/13/16 6:05 PM
  */
 
-package com.antoniocappiello.cloudapp.presenter.injector;
+package com.antoniocappiello.cloudapp.service.injector;
 
 import android.content.Context;
-
-import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
-import com.antoniocappiello.cloudapp.presenter.backend.FirebaseBackendAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,14 +22,9 @@ public class AppModule {
     }
 
     @Provides
-    @AppScope
     public Context provideAppContext() {
         return context;
     }
 
-    @Provides
-    public BackendAdapter provideBackendAdapter() {
-        return new FirebaseBackendAdapter(context);
-    }
 
 }

@@ -3,9 +3,10 @@ package com.antoniocappiello.cloudapp;
 import android.app.Application;
 import android.content.ContextWrapper;
 
-import com.antoniocappiello.cloudapp.presenter.injector.AppComponent;
-import com.antoniocappiello.cloudapp.presenter.injector.AppModule;
-import com.antoniocappiello.cloudapp.presenter.injector.DaggerAppComponent;
+import com.antoniocappiello.cloudapp.service.injector.AppModule;
+import com.antoniocappiello.cloudapp.service.injector.BackendModule;
+import com.antoniocappiello.cloudapp.service.injector.DaggerModuleInjector;
+import com.antoniocappiello.cloudapp.service.injector.ModuleInjector;
 import com.firebase.client.Firebase;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
@@ -13,7 +14,7 @@ import com.pixplicity.easyprefs.library.Prefs;
 
 public class App extends Application{
 
-    private AppComponent appComponent;
+    private ModuleInjector mModuleInjector;
 
     @Override
     public void onCreate() {
@@ -44,13 +45,14 @@ public class App extends Application{
     }
 
     private void initDependencyInjection() {
-        appComponent = DaggerAppComponent.builder()
+        mModuleInjector = DaggerModuleInjector.builder()
                 .appModule(new AppModule(this))
+                .backendModule(new BackendModule())
                 .build();
     }
 
-    public AppComponent appComponent() {
-        return appComponent;
+    public ModuleInjector appComponent() {
+        return mModuleInjector;
     }
 
 }

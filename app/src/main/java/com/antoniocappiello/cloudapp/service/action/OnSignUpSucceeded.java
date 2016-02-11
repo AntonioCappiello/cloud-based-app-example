@@ -1,11 +1,11 @@
-package com.antoniocappiello.cloudapp.presenter.command;
+package com.antoniocappiello.cloudapp.service.action;
 
 import android.app.Activity;
 import android.content.Intent;
 
 import com.orhanobut.logger.Logger;
 
-public class OnSignUpSucceeded implements Command {
+public class OnSignUpSucceeded implements Action {
 
     private final Activity mActivity;
 

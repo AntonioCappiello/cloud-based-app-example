@@ -5,16 +5,15 @@
  * Last modified 2/8/16 8:27 PM
  */
 
-package com.antoniocappiello.cloudapp.presenter.command;
+package com.antoniocappiello.cloudapp.service.action;
 
 import android.app.Activity;
 import android.content.Intent;
 
-import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.view.BaseActivity;
-import com.antoniocappiello.cloudapp.view.login.LoginActivity;
+import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
+import com.antoniocappiello.cloudapp.ui.screen.login.LoginActivity;
 
-public class OnLoggedOut implements Command{
+public class OnLoggedOut implements Action {
 
     Activity mActivity;
 

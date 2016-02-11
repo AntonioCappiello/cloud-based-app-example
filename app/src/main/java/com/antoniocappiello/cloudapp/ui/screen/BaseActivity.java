@@ -5,9 +5,8 @@
  * Last modified 2/8/16 8:19 PM
  */
 
-package com.antoniocappiello.cloudapp.view;
+package com.antoniocappiello.cloudapp.ui.screen;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,13 +14,10 @@ import android.view.MenuItem;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.presenter.backend.BackendAdapter;
-import com.antoniocappiello.cloudapp.presenter.command.Command;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignInFailed;
-import com.antoniocappiello.cloudapp.presenter.command.OnSignInSucceeded;
-import com.antoniocappiello.cloudapp.presenter.command.OnLoggedOut;
-import com.antoniocappiello.cloudapp.view.login.CreateAccountActivity;
-import com.antoniocappiello.cloudapp.view.login.LoginActivity;
+import com.antoniocappiello.cloudapp.service.action.OnLoggedOut;
+import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.ui.screen.login.CreateAccountActivity;
+import com.antoniocappiello.cloudapp.ui.screen.login.LoginActivity;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -35,11 +31,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((App) getApplication()).appComponent().inject(this);
-
         if (!((this instanceof LoginActivity) || (this instanceof CreateAccountActivity))) {
             mBackendAdapter.addAuthStateListener(null, new OnLoggedOut(this));
         }
-
     }
 
     @Override
