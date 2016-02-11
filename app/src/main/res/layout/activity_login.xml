@@ -5,7 +5,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:background="@color/colorPrimary"
-            tools:context=".view.login.LoginActivity">
+            tools:context=".ui.screen.login.LoginActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout_login_activity"
@@ -31,7 +31,7 @@
             android:layout_marginBottom="@dimen/lists_title_bottom_margin"
             app:hintTextAppearance="@style/HintText">
 
-            <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
+            <com.antoniocappiello.cloudapp.ui.customwidget.EditTextWithClearIcon
                 android:id="@+id/edit_text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
