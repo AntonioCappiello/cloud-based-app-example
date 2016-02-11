@@ -13,11 +13,11 @@ import android.content.Intent;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
 import com.antoniocappiello.cloudapp.ui.screen.login.LoginActivity;
 
-public class OnLoggedOut implements Action {
+public class ShowLoginScreenAction implements Action {
 
     Activity mActivity;
 
-    public OnLoggedOut(BaseActivity activity) {
+    public ShowLoginScreenAction(BaseActivity activity) {
         mActivity = activity;
     }
 

@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.service.action.OnLoggedOut;
+import com.antoniocappiello.cloudapp.service.action.ShowLoginScreenAction;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.screen.login.CreateAccountActivity;
 import com.antoniocappiello.cloudapp.ui.screen.login.LoginActivity;
@@ -32,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ((App) getApplication()).appComponent().inject(this);
         if (!((this instanceof LoginActivity) || (this instanceof CreateAccountActivity))) {
-            mBackendAdapter.addAuthStateListener(null, new OnLoggedOut(this));
+            mBackendAdapter.addAuthStateListener(null, new ShowLoginScreenAction(this));
         }
     }
 

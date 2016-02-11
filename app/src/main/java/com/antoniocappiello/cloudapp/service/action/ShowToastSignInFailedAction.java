@@ -3,11 +3,11 @@ package com.antoniocappiello.cloudapp.service.action;
 import android.app.Activity;
 import android.widget.Toast;
 
-public class OnSignInFailed implements Action {
+public class ShowToastSignInFailedAction implements Action {
 
     private final Activity mActivity;
 
-    public OnSignInFailed(Activity activity) {
+    public ShowToastSignInFailedAction(Activity activity) {
         mActivity = activity;
     }
 

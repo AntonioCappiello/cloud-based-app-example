@@ -5,11 +5,11 @@ import android.content.Intent;
 
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemListActivity;
 
-public class OnSignInSucceeded implements Action {
+public class ShowItemListScreenAction implements Action {
 
     private final Activity mActivity;
 
-    public OnSignInSucceeded(Activity activity) {
+    public ShowItemListScreenAction(Activity activity) {
         mActivity = activity;
     }
 
