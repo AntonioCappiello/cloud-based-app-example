@@ -20,6 +20,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.orhanobut.logger.Logger;
 import com.pixplicity.easyprefs.library.Prefs;
@@ -44,9 +45,11 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     private static final String UID_MAPPING = "uid_mapping";
     private static final String USERS = "users";
     public static final String UID_MAPPINGS = "uidMappings";
+    private static final String FIREBASE_PROPERTY_IS_EMAIL_CONFIRMED = "emailConfirmed";
 
     private Firebase refRoot;
     private Firebase refList;
+    private Firebase refUsers;
     private Firebase refUidMapping;
 
     private FirebaseRecyclerAdapter<Item, ItemViewHolder> mAdapter;
@@ -58,6 +61,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         Firebase.setAndroidContext(context);
         refRoot = new Firebase(BuildConfig.FIREBASE_ROOT_URL);
         refList = refRoot.child(LIST);
+        refUsers = refRoot.child(USERS);
         refUidMapping = refRoot.child(UID_MAPPING);
         mCurrentUserEmail = Prefs.getString(Constants.KEY_SIGNUP_EMAIL, "");
     }
@@ -135,7 +139,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     @Override
     public void removeAuthStateListener() {
-        if(mAuthStateListener!=null) {
+        if(mAuthStateListener != null) {
             refRoot.removeAuthStateListener(mAuthStateListener);
         }
     }
@@ -149,6 +153,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
                 mCurrentUserEmail = email;
                 authProgressDialog.dismiss();
                 onAuthSucceeded.execute();
+                ifPasswordIsTemporaryMakeItPermanent(password);
             }
 
             @Override
@@ -159,6 +164,53 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         };
         authProgressDialog.show();
         refRoot.authWithPassword(email, password, authenticationResultHandler);
+    }
+
+    private void ifPasswordIsTemporaryMakeItPermanent(String password) {
+        getCurrentFirebaseUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    if (!user.isEmailConfirmed()) {
+                        Logger.d("Email not confirmed yet");
+                        makePasswordPermanent(password);
+                    }
+                    else {
+                        Logger.d("Email already confirmed");
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Logger.e(firebaseError.toString());
+            }
+        });
+    }
+
+    private Firebase getCurrentFirebaseUserRef() {
+        return refUsers.child(EmailEncoder.encodeEmail(mCurrentUserEmail));
+    }
+
+    private void makePasswordPermanent(String password) {
+        refRoot.changePassword(mCurrentUserEmail, password, password, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                setUserEmailConfirmed();
+            }
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Logger.e(firebaseError.toString());
+            }
+        });
+    }
+
+    private void setUserEmailConfirmed() {
+        getCurrentFirebaseUserRef()
+                .child(FIREBASE_PROPERTY_IS_EMAIL_CONFIRMED)
+                .setValue(true);
+        Logger.d("Email confirmed");
+
     }
 
     @Override
@@ -175,7 +227,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
                 Logger.e(firebaseError.toString());
                 signUpProgressDialog.dismiss();
                 onSignInFailed.execute(firebaseError.getMessage());
-
+                // TODO handle email adress aready in use, maybe with a reset password screen
             }
         });
     }
@@ -236,7 +288,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         refRoot.updateChildren(uidAndUserMapping, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                Logger.d("creating user");
+                Logger.d("user created");
                 if (firebaseError != null) {
                     // Try just making a uid mapping
                     refUidMapping.child(authUserId).setValue(encodedEmail);
