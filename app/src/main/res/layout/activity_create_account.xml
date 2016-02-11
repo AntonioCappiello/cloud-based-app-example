@@ -5,7 +5,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:background="@color/colorPrimary"
-            tools:context=".view.login.CreateAccountActivity">
+            tools:context=".ui.screen.login.CreateAccountActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout_create_account_activity"
@@ -31,7 +31,7 @@
             android:layout_marginBottom="@dimen/lists_title_bottom_margin"
             app:hintTextAppearance="@style/HintText">
 
-            <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
+            <com.antoniocappiello.cloudapp.ui.customwidget.EditTextWithClearIcon
                 android:id="@+id/edit_text_username_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             app:hintTextAppearance="@style/HintText"
             android:layout_marginBottom="@dimen/margin_small">
 
-            <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
+            <com.antoniocappiello.cloudapp.ui.customwidget.EditTextWithClearIcon
                 android:id="@+id/edit_text_email_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.antoniocappiello.cloudapp.view.login.LoginActivity"
+            android:name=".ui.screen.login.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -22,10 +22,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.antoniocappiello.cloudapp.view.list.ItemListActivity"
+        <activity android:name=".ui.screen.itemlist.ItemListActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name="com.antoniocappiello.cloudapp.view.login.CreateAccountActivity"
+        <activity android:name=".ui.screen.login.CreateAccountActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
 
 

@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/lists_title_bottom_margin"
         app:hintTextAppearance="@style/HintText">
 
-        <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
+        <com.antoniocappiello.cloudapp.ui.customwidget.EditTextWithClearIcon
             android:id="@+id/edit_text_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/HintText">
 
-        <com.antoniocappiello.cloudapp.view.widgets.EditTextWithClearIcon
+        <com.antoniocappiello.cloudapp.ui.customwidget.EditTextWithClearIcon
             android:id="@+id/edit_text_item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
