@@ -5,11 +5,11 @@ import android.content.Intent;
 
 import com.orhanobut.logger.Logger;
 
-public class OnSignUpSucceeded implements Action {
+public class OpenEmailAppAction implements Action {
 
     private final Activity mActivity;
 
-    public OnSignUpSucceeded(Activity activity) {
+    public OpenEmailAppAction(Activity activity) {
         mActivity = activity;
     }
 

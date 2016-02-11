@@ -11,8 +11,8 @@ import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.service.action.Action;
-import com.antoniocappiello.cloudapp.service.action.OnSignInFailed;
-import com.antoniocappiello.cloudapp.service.action.OnSignInSucceeded;
+import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
+import com.antoniocappiello.cloudapp.service.action.ShowItemListScreenAction;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
@@ -48,8 +48,8 @@ public class LoginActivity extends BaseActivity {
         ((App) getApplication()).appComponent().inject(this);
         initPasswordInputListener();
         mAuthProgressDialog = ProgressDialogFactory.getSignInProgressDialog(this);
-        mOnSignInSucceeded = new OnSignInSucceeded(this);
-        mOnSignInFailed = new OnSignInFailed(this);
+        mOnSignInSucceeded = new ShowItemListScreenAction(this);
+        mOnSignInFailed = new ShowToastSignInFailedAction(this);
     }
 
     private void initPasswordInputListener() {
