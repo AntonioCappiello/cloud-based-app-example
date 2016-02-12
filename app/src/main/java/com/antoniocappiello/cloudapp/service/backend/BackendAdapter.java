@@ -15,6 +15,9 @@ public interface BackendAdapter<T> {
 
     void addItemToUserList(T item);
 
+    /**
+     Example of approach #2, in http://antoniocappiello.com/2016/02/09/getting-started-with-firebase-while-moving-away-from-parse/
+     */
     Observable<List<T>> readItems();
 
     RecyclerView.Adapter<ItemViewHolder> getRecyclerViewAdapterForUserItemList();
@@ -25,6 +28,9 @@ public interface BackendAdapter<T> {
 
     void removeAuthStateListener();
 
+    /**
+    Example of approach #3, in http://antoniocappiello.com/2016/02/09/getting-started-with-firebase-while-moving-away-from-parse/
+     */
     void signIn(String email, String password, ProgressDialog signInProgressDialog, Action onAuthSucceeded, Action onAuthFailed);
 
     void logOut();
