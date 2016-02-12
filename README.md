@@ -11,7 +11,11 @@ partially using as inspiration the Udacity's course ["Firebase Essentials For An
 
 ![alt text](http://blog.ionic.io/wp-content/uploads/2015/06/firebase-ionic-user-auth.png)
 
-### Instruction to build the project
+## Motivations
+
+Read the motivations about this project on my [blog post] (http://antoniocappiello.com/2016/02/12/getting-started-with-firebase-while-moving-away-from-parse/).
+
+## Instructions to build the project
 The app's *build.gradle* files uses three variables to connect to your firebase app. Those variables are not included in the git repo, therefore you need to create a gradle.properties file in the root folder of the project with the following variables:
 ```javascript
 FirebaseRootUrl = "https://[YOUR FIREBASE APP NAME AS IN THE DASHBORAD].firebaseio.com/"
