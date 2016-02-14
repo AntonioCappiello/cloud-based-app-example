@@ -1,0 +1,53 @@
+{
+  "rules": {
+    ".read" : "auth != null",
+    ".write" : "auth != null",
+    "list": {
+      "$listId": {
+        "$itemId": {
+          ".validate": "newData.hasChildren(['name', 'timestamp', 'description'])",
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "description": {
+            ".validate": "newData.isString()"
+          },
+          "timestamp": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        }
+      }
+    },
+    "uidMappings":{
+    },
+    "users": {
+      "$userEncodedEmail": {
+        ".validate": "newData.hasChildren(['email', 'name', 'emailConfirmed', 'timestampJoined'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9,_%+-]+@[A-Z0-9,-]+,[A-Z]{2,4}$/i)"
+        },
+        "timestampJoined": {
+          ".validate": "newData.hasChildren(['timestamp'])",
+          "timestamp": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
+        "emailConfirmed": {
+          ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      }
+    }
+  }
+}

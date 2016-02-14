@@ -42,7 +42,6 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     private static final String LIST = "list";
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
-    private static final String UID_MAPPING = "uid_mapping";
     private static final String USERS = "users";
     public static final String UID_MAPPINGS = "uidMappings";
     private static final String FIREBASE_PROPERTY_IS_EMAIL_CONFIRMED = "emailConfirmed";
@@ -62,7 +61,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         refRoot = new Firebase(BuildConfig.FIREBASE_ROOT_URL);
         refList = refRoot.child(LIST);
         refUsers = refRoot.child(USERS);
-        refUidMapping = refRoot.child(UID_MAPPING);
+        refUidMapping = refRoot.child(UID_MAPPINGS);
         mCurrentUserEmail = Prefs.getString(Constants.KEY_SIGNUP_EMAIL, "");
     }
 
@@ -281,20 +280,19 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     private void addUidAndUserMapping(final String authUserId, Account account) {
         final String encodedEmail = EmailEncoder.encodeEmail(account.getUserEmail());
-
         HashMap<String, Object> uidAndUserMapping = createUidAndUserMap(encodedEmail, authUserId, account);
 
         // Try to update the database; if there is already a user, this will fail
-        refRoot.updateChildren(uidAndUserMapping, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+        refRoot.updateChildren(uidAndUserMapping, (firebaseError, firebase) -> {
+            if( firebaseError == null) {
                 Logger.d("user created");
-                if (firebaseError != null) {
-                    // Try just making a uid mapping
-                    refUidMapping.child(authUserId).setValue(encodedEmail);
-                }
-                logOut();
             }
+            else if (firebaseError != null) {
+                Logger.e("error in creating user and uid mapping: " + firebaseError.toString());
+                Logger.d("Try just making a uid mapping");
+                refUidMapping.child(authUserId).setValue(encodedEmail);
+            }
+            logOut();
         });
 
     }
