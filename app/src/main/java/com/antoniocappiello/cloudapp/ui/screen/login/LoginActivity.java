@@ -82,15 +82,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_sign_in_with_email_and_password)
-    public void signIn() {
-        signInWithEmailAndPassword();
-    }
-
-    @OnClick(R.id.text_view_sign_up)
-    public void signUp() {
-        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
-    }
-
     public void signInWithEmailAndPassword() {
         String email, password;
         if(BuildConfig.FLAVOR.equalsIgnoreCase("dev")) {
@@ -105,6 +96,26 @@ public class LoginActivity extends BaseActivity {
         if(isEmailValid(email) && isPasswordValid(password)) {
             mBackendAdapter.signIn(email, password, mAuthProgressDialog, mOnSignInSucceeded, mOnSignInFailed);
         }
+    }
+
+    @OnClick(R.id.button_sign_in_with_google)
+    public void singInWithGoogle(){
+        Logger.w("to be implemented");
+    }
+
+    @OnClick(R.id.button_sign_in_with_facebook)
+    public void singInWithFacebook(){
+        Logger.w("to be implemented");
+    }
+
+    @OnClick(R.id.button_sign_in_with_twitter)
+    public void singInWithTwitter(){
+        Logger.w("to be implemented");
+    }
+
+    @OnClick(R.id.text_view_sign_up)
+    public void signUp() {
+        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
     }
 
     private boolean isEmailValid(String email) {
