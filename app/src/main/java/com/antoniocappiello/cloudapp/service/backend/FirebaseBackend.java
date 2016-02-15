@@ -58,6 +58,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     public FirebaseBackend(Context context) {
         Firebase.setAndroidContext(context);
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
         refRoot = new Firebase(BuildConfig.FIREBASE_ROOT_URL);
         refList = refRoot.child(LIST);
         refUsers = refRoot.child(USERS);
