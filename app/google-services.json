@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_id": "cloudapp-a892c",
+    "project_number": "623617919617",
+    "name": "Cloud App"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623617919617:android:549fed18e1b1716a",
+        "client_id": "android:com.antoniocappiello.cloudapp",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.antoniocappiello.cloudapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623617919617-tjaohuu25m9ae1r5cg6rd77jhmhkaa8r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.antoniocappiello.cloudapp",
+            "certificate_hash": "5EF1C4DC560E9B0EB67DA4EE356E86E512D93D9B"
+          }
+        },
+        {
+          "client_id": "623617919617-ee7daptlvfq81im6m95khk79o4sfqkqd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.antoniocappiello.cloudapp",
+            "certificate_hash": "ABCCDDBEB69E87E3B863A683241D79DE30E2A42F"
+          }
+        },
+        {
+          "client_id": "623617919617-56d5e88ih5484vfvs42tfbbkjun9q6ih.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

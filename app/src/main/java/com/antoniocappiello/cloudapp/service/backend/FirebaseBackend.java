@@ -22,6 +22,7 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
+import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.orhanobut.logger.Logger;
 import com.pixplicity.easyprefs.library.Prefs;
 import com.soikonomakis.rxfirebase.RxFirebase;
@@ -247,6 +248,41 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
     }
 
+    @Override
+    public void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken firebaseOAuthToken) {
+        Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Logger.d("onAuthenticated");
+                addUidAndUserMapping((String) authData.getUid(), new Account("username", mCurrentUserEmail, ""), false);
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Logger.d("onAuthenticationError " + firebaseError.toString());
+            }
+        };
+
+        if (firebaseOAuthToken.mode == FirebaseOAuthToken.SIMPLE) {
+            // Simple mode is used for Facebook and Google auth
+            refRoot.authWithOAuthToken(firebaseOAuthToken.provider, firebaseOAuthToken.token, authResultHandler);
+        } else if (firebaseOAuthToken.mode == FirebaseOAuthToken.COMPLEX) {
+            // Complex mode is used for Twitter auth
+            Map<String, String> options = new HashMap<>();
+            options.put("oauth_token", firebaseOAuthToken.token);
+            options.put("oauth_token_secret", firebaseOAuthToken.secret);
+            options.put("user_id", firebaseOAuthToken.uid);
+
+            refRoot.authWithOAuthToken(firebaseOAuthToken.provider, options, authResultHandler);
+        }
+    }
+
+    @Override
+    public void setCurrentUserEmail(String currentUserEmail) {
+        mCurrentUserEmail = currentUserEmail;
+        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, mCurrentUserEmail);
+    }
+
     private void sendConfirmationEmailWithNewPassword(Map<String, Object> result, Account account, ProgressDialog signUpProgressDialog, Action onSignUpSucceeded) {
         refRoot.resetPassword(account.getUserEmail(), new Firebase.ResultHandler() {
             @Override
@@ -259,7 +295,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
                         signUpProgressDialog.dismiss();
                         Prefs.putString(Constants.KEY_SIGNUP_EMAIL, account.getUserEmail());
                         mCurrentUserEmail = account.getUserEmail();
-                        addUidAndUserMapping((String) result.get("uid"), account);
+                        addUidAndUserMapping((String) result.get("uid"), account, true);
                         onSignUpSucceeded.execute();
                     }
 
@@ -279,23 +315,24 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         });
     }
 
-    private void addUidAndUserMapping(final String authUserId, Account account) {
+    private void addUidAndUserMapping(final String authUserId, Account account, boolean logoutImmediately) {
         final String encodedEmail = EmailEncoder.encodeEmail(account.getUserEmail());
         HashMap<String, Object> uidAndUserMapping = createUidAndUserMap(encodedEmail, authUserId, account);
 
         // Try to update the database; if there is already a user, this will fail
         refRoot.updateChildren(uidAndUserMapping, (firebaseError, firebase) -> {
             if( firebaseError == null) {
-                Logger.d("user created");
+                Logger.d("user and uidMapping updated");
             }
             else if (firebaseError != null) {
                 Logger.e("error in creating user and uid mapping: " + firebaseError.toString());
                 Logger.d("Try just making a uid mapping");
                 refUidMapping.child(authUserId).setValue(encodedEmail);
             }
-            logOut();
+            if(logoutImmediately) {
+                logOut();
+            }
         });
-
     }
 
     private HashMap<String, Object> createUidAndUserMap(String encodedEmail, String authUserId, Account account) {
