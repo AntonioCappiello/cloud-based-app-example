@@ -19,3 +19,17 @@ FirebaseTestEmail = "[yourtestmail@mail.com]"
 FirebaseTestPw = "[yourtestpw]"
 ```
 The *FirebaseTestEmail* and *FirebaseTestPw* are used only to facilitate the login to Firebase with a known account and to avoid to fill in the username and password. Those two variables are used only in the *dev* product flavor.
+
+### LogIn via Facebook, Twitter
+
+In order to use authentication via social media, create under `res/values` a file named `keys.xml` (it is already in .gitignore) and add to it the following lines with your data:
+
+```xml
+<string name="facebook_app_id">[VALUE]</string>
+<string name="twitter_app_key">[VALUE]</string>
+<string name="twitter_app_secret">[VALUE]</string>
+```
+
+### LogIn via Google
+
+If you're using Google authentication, place your `google-services.json` in the app folder.

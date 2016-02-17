@@ -27,8 +27,8 @@ public class AuthProvider implements GoogleApiClient.ConnectionCallbacks, Google
 
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
-    private View mGoogleSignInView;
     private BackendAdapter mBackendAdapter;
+    private FacebookAuthProvider mFacebookAuthProvider;
 
     public AuthProvider(Activity activity) {
         mActivity = activity;
@@ -52,8 +52,7 @@ public class AuthProvider implements GoogleApiClient.ConnectionCallbacks, Google
     }
 
     public AuthProvider setGoogleSignInView(View googleSignInView) {
-        mGoogleSignInView = googleSignInView;
-        mGoogleSignInView.setOnClickListener(new View.OnClickListener() {
+        googleSignInView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -93,8 +92,13 @@ public class AuthProvider implements GoogleApiClient.ConnectionCallbacks, Google
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-        handleSignInResult(result);
+        if (requestCode == AuthProvider.GOOGLE_SIGN_IN_REQUEST_CODE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+        else {
+            mFacebookAuthProvider.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -123,10 +127,26 @@ public class AuthProvider implements GoogleApiClient.ConnectionCallbacks, Google
                         Logger.d(status.toString());
                     }
                 });
+        mFacebookAuthProvider.logout();
     }
 
     public AuthProvider setBackendAdapter(BackendAdapter backendAdapter) {
         mBackendAdapter = backendAdapter;
+        return this;
+    }
+
+    public AuthProvider enableFacebookProvider() {
+        mFacebookAuthProvider = new FacebookAuthProvider(mActivity, mBackendAdapter);
+        return this;
+    }
+
+    public AuthProvider setFacebookSignInView(View facebookSignInView) {
+        facebookSignInView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFacebookAuthProvider.login(mActivity);
+            }
+        });
         return this;
     }
 }

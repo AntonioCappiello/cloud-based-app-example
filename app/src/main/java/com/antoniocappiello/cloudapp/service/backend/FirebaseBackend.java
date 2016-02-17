@@ -103,14 +103,12 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
 
         Firebase refUserList = refList.child(EmailEncoder.encodeEmail(mCurrentUserEmail));
-        if (mAdapter == null) {
-            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
-                @Override
-                public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
-                    itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
-                }
-            };
-        }
+        mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
+            @Override
+            public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
+                itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
+            }
+        };
         return mAdapter;
     }
 
@@ -358,6 +356,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     @Override
     public void logOut() {
         refRoot.unauth();
+        cleanup();
     }
 
 }

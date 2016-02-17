@@ -38,6 +38,9 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.button_sign_in_with_google)
     View mButtonSignInVithGoogle;
 
+    @Bind(R.id.button_sign_in_with_facebook)
+    View mButtonSignInVithFacebook;
+
     @Inject
     BackendAdapter mBackendAdapter;
 
@@ -60,7 +63,9 @@ public class LoginActivity extends BaseActivity {
         mAuthProvider = new AuthProvider(this)
                 .enableGoogleProvider()
                 .setGoogleSignInView(mButtonSignInVithGoogle)
-                .setBackendAdapter(mBackendAdapter);
+                .setBackendAdapter(mBackendAdapter)
+                .enableFacebookProvider()
+                .setFacebookSignInView(mButtonSignInVithFacebook);
 
     }
 
@@ -134,9 +139,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AuthProvider.GOOGLE_SIGN_IN_REQUEST_CODE) {
-            mAuthProvider.onActivityResult(requestCode, resultCode, data);
-        }
+        mAuthProvider.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
