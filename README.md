@@ -20,7 +20,7 @@ FirebaseTestPw = "[yourtestpw]"
 ```
 The *FirebaseTestEmail* and *FirebaseTestPw* are used only to facilitate the login to Firebase with a known account and to avoid to fill in the username and password. Those two variables are used only in the *dev* product flavor.
 
-### LogIn via Facebook, Twitter
+### LogIn via Facebook and Twitter
 
 In order to use authentication via social media, create under `res/values` a file named `keys.xml` (it is already in .gitignore) and add to it the following lines with your data:
 
@@ -30,6 +30,10 @@ In order to use authentication via social media, create under `res/values` a fil
 <string name="twitter_app_secret">[VALUE]</string>
 ```
 
+Moreover, for Facebook you need also to configure your app in your Facebook Dev page, as explained [here](https://www.firebase.com/docs/android/guide/login/facebook.html#section-configure) (don't forget to add your app keyhash, which you can generate with the method `service/utils/LogHelper.logHashKey()`).
+
+For Twitter, follow those [instructions](https://www.firebase.com/docs/android/guide/login/twitter.html).
+
 ### LogIn via Google
 
-If you're using Google authentication, place your `google-services.json` in the app folder.
+If you're using Google authentication you need to create a google project in your developer portal by following those [instructions](https://www.firebase.com/docs/android/guide/login/google.html) and place your `google-services.json` in the app folder.
