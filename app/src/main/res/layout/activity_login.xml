@@ -5,7 +5,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:background="@color/colorPrimary"
-            tools:context=".ui.screen.login.LoginActivity">
+            tools:activity=".ui.screen.login.LoginActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout_login_activity"

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -11,8 +12,9 @@ import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.service.action.Action;
-import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.action.ShowItemListScreenAction;
+import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
+import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
@@ -33,12 +35,16 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.edit_text_password)
     EditText mEditTextPasswordInput;
 
+    @Bind(R.id.button_sign_in_with_google)
+    View mButtonSignInVithGoogle;
+
     @Inject
     BackendAdapter mBackendAdapter;
 
     private Action mOnSignInSucceeded;
     private Action mOnSignInFailed;
     private ProgressDialog mAuthProgressDialog;
+    private AuthProvider mAuthProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,12 @@ public class LoginActivity extends BaseActivity {
         mAuthProgressDialog = ProgressDialogFactory.getSignInProgressDialog(this);
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
+
+        mAuthProvider = new AuthProvider(this)
+                .enableGoogleProvider()
+                .setGoogleSignInView(mButtonSignInVithGoogle)
+                .setBackendAdapter(mBackendAdapter);
+
     }
 
     private void initPasswordInputListener() {
@@ -98,21 +110,6 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.button_sign_in_with_google)
-    public void singInWithGoogle(){
-        Logger.w("to be implemented");
-    }
-
-    @OnClick(R.id.button_sign_in_with_facebook)
-    public void singInWithFacebook(){
-        Logger.w("to be implemented");
-    }
-
-    @OnClick(R.id.button_sign_in_with_twitter)
-    public void singInWithTwitter(){
-        Logger.w("to be implemented");
-    }
-
     @OnClick(R.id.text_view_sign_up)
     public void signUp() {
         startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
@@ -132,5 +129,19 @@ public class LoginActivity extends BaseActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AuthProvider.GOOGLE_SIGN_IN_REQUEST_CODE) {
+            mAuthProvider.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void logOut() {
+        super.logOut();
+        mAuthProvider.logOut();
     }
 }

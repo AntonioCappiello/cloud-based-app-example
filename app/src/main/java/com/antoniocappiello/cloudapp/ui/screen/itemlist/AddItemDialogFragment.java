@@ -87,10 +87,10 @@ public class AddItemDialogFragment extends DialogFragment {
     private void addItem() {
         String itemName = mEditTextItemName.getText().toString();
         String itemDescription = mEditTextItemDescription.getText().toString();
-        if (ItemPropertyValidator.isNameValid(itemName)) {
+        if (!ItemPropertyValidator.isNameValid(itemName)) {
             mEditTextItemName.setError(getString(R.string.error_cannot_be_empty));
         }
-        else if (ItemPropertyValidator.isDescriptionValid(itemDescription)){
+        else if (!ItemPropertyValidator.isDescriptionValid(itemDescription)){
             mEditTextItemDescription.setError(getString(R.string.error_cannot_be_empty));
         }
         else {
