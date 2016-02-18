@@ -71,7 +71,11 @@ public class LoginActivity extends BaseActivity {
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
 
-        TwitterAuthProvider twitterAuthProvider = new TwitterAuthProvider(this, createOAuthTaskHandler(AuthProviderType.TWITTER), mButtonSignInWithTwitter);
+        AuthProvider twitterAuthProvider = new TwitterAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithTwitter)
+                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.TWITTER))
+                .build();
 
         AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
                 .activity(this)

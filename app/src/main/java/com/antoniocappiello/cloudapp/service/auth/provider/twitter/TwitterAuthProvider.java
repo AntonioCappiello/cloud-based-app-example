@@ -7,6 +7,7 @@ import android.view.View;
 import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.AuthProviderBuilder;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
 
@@ -20,12 +21,12 @@ public class TwitterAuthProvider implements AuthProvider {
     private final OAuthTokenHandler mOAuthTokenHandler;
     private final View mSignInView;
 
-    public TwitterAuthProvider(Activity activity, OAuthTokenHandler oAuthTokenHandler, View signInView) {
-        mActivity = activity;
-        mOAuthTokenHandler = oAuthTokenHandler;
-        mSignInView = signInView;
+    public TwitterAuthProvider(Builder builder) {
+        mActivity = builder.mActivity;
+        mSignInView = builder.mSignInView;
+        mOAuthTokenHandler = builder.mOAuthTokenHandler;
 
-        setSignInView(signInView);
+        setSignInView(mSignInView);
     }
 
     private void setSignInView(View signInView) {
@@ -62,6 +63,16 @@ public class TwitterAuthProvider implements AuthProvider {
         } else if (resultCode == TwitterActions.PROVIDER_ERROR) {
             mOAuthTokenHandler.onOAuthFailure("PROVIDER_ERROR: " + data.getStringExtra("error"));
 
+        }
+    }
+
+    public static class Builder extends AuthProviderBuilder{
+        @Override
+        public TwitterAuthProvider build() {
+            if(mActivity == null || mSignInView == null || mOAuthTokenHandler == null){
+                throwIllegalStateException();
+            }
+            return new TwitterAuthProvider(this);
         }
     }
 }
