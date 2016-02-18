@@ -3,6 +3,7 @@ package com.antoniocappiello.cloudapp.ui.screen.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,9 +16,15 @@ import com.antoniocappiello.cloudapp.service.action.Action;
 import com.antoniocappiello.cloudapp.service.action.ShowItemListScreenAction;
 import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
+import com.antoniocappiello.cloudapp.service.auth.AuthService;
+import com.antoniocappiello.cloudapp.service.auth.facebook.FacebookAuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.google.GoogleAuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -38,13 +45,16 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.button_sign_in_with_google)
     View mButtonSignInVithGoogle;
 
+    @Bind(R.id.button_sign_in_with_facebook)
+    View mButtonSignInVithFacebook;
+
     @Inject
     BackendAdapter mBackendAdapter;
 
     private Action mOnSignInSucceeded;
     private Action mOnSignInFailed;
     private ProgressDialog mAuthProgressDialog;
-    private AuthProvider mAuthProvider;
+    private AuthService mAuthService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +67,27 @@ public class LoginActivity extends BaseActivity {
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
 
-        mAuthProvider = new AuthProvider(this)
-                .enableGoogleProvider()
-                .setGoogleSignInView(mButtonSignInVithGoogle)
-                .setBackendAdapter(mBackendAdapter);
+        AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInVithGoogle)
+                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.GOOGLE))
+                .connectionCallback(getGoogleConnectionCallback())
+                .onConnectionFailedListener(getGoogleOnConnectionFailedListener())
+                .build();
 
+        AuthProvider facebookAuthProvider = new FacebookAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInVithFacebook)
+                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.FACEBOOK))
+                .build();
+
+        mAuthService = new AuthService()
+                .enableAuthProvider(googleAuthProvider)
+                .enableAuthProvider(facebookAuthProvider);
+    }
+
+    private OAuthTokenHandler createOAuthTaskHandler(AuthProviderType authProviderType) {
+        return new OAuthTokenHandler(authProviderType, mBackendAdapter);
     }
 
     private void initPasswordInputListener() {
@@ -134,14 +160,30 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AuthProvider.GOOGLE_SIGN_IN_REQUEST_CODE) {
-            mAuthProvider.onActivityResult(requestCode, resultCode, data);
-        }
+        mAuthService.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void logOut() {
         super.logOut();
-        mAuthProvider.logOut();
+        mAuthService.logOut();
+    }
+
+    public GoogleApiClient.ConnectionCallbacks getGoogleConnectionCallback() {
+        return new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+                Logger.d("onConnected");
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+                Logger.d("onConnectionSuspended");
+            }
+        };
+    }
+
+    public GoogleApiClient.OnConnectionFailedListener getGoogleOnConnectionFailedListener() {
+        return connectionResult -> Logger.e(connectionResult.toString());
     }
 }

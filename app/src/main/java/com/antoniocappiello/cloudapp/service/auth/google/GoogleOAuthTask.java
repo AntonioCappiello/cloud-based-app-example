@@ -1,11 +1,10 @@
-package com.antoniocappiello.cloudapp.service.auth;
+package com.antoniocappiello.cloudapp.service.auth.google;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.firebase.ui.auth.core.FirebaseResponse;
+import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -14,7 +13,7 @@ public class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
     private final String TAG = "GoogleOAuthTask";
 
     private Context mContext;
-    private GoogleOAuthTaskHandler mHandler;
+    private OAuthTokenHandler mHandler;
 
     protected String doInBackground(String... emails) {
         String token = "";
@@ -37,11 +36,11 @@ public class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
     public void setContext(Context context) {
         mContext = context;
     }
-    public void setHandler(GoogleOAuthTaskHandler handler) { mHandler = handler; }
+    public void setHandler(OAuthTokenHandler handler) { mHandler = handler; }
 
     protected void onPostExecute(String token) {
         if (token.equals("")) {
-            mHandler.onOAuthFailure(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, "Fetching OAuth token from Google failed"));
+            mHandler.onOAuthFailure("Fetching OAuth token from Google failed");
         } else {
             mHandler.onOAuthSuccess(token);
         }

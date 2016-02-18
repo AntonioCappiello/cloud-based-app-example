@@ -11,6 +11,8 @@ import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.service.action.Action;
+import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
+import com.antoniocappiello.cloudapp.service.event.UpdateCurrentUserEmailEvent;
 import com.antoniocappiello.cloudapp.service.utils.EmailEncoder;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -103,14 +105,12 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
 
         Firebase refUserList = refList.child(EmailEncoder.encodeEmail(mCurrentUserEmail));
-        if (mAdapter == null) {
-            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
-                @Override
-                public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
-                    itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
-                }
-            };
-        }
+        mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
+            @Override
+            public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
+                itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
+            }
+        };
         return mAdapter;
     }
 
@@ -249,7 +249,8 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     }
 
     @Override
-    public void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken firebaseOAuthToken) {
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token) {
+
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
@@ -263,6 +264,8 @@ public class FirebaseBackend implements BackendAdapter<Item> {
             }
         };
 
+        FirebaseOAuthToken firebaseOAuthToken = new FirebaseOAuthToken(authProviderType.getProviderName(), token);
+
         if (firebaseOAuthToken.mode == FirebaseOAuthToken.SIMPLE) {
             // Simple mode is used for Facebook and Google auth
             refRoot.authWithOAuthToken(firebaseOAuthToken.provider, firebaseOAuthToken.token, authResultHandler);
@@ -275,12 +278,6 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
             refRoot.authWithOAuthToken(firebaseOAuthToken.provider, options, authResultHandler);
         }
-    }
-
-    @Override
-    public void setCurrentUserEmail(String currentUserEmail) {
-        mCurrentUserEmail = currentUserEmail;
-        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, mCurrentUserEmail);
     }
 
     private void sendConfirmationEmailWithNewPassword(Map<String, Object> result, Account account, ProgressDialog signUpProgressDialog, Action onSignUpSucceeded) {
@@ -358,7 +355,12 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     @Override
     public void logOut() {
         refRoot.unauth();
+        cleanup();
     }
 
+    public void onEvent(UpdateCurrentUserEmailEvent event){
+        mCurrentUserEmail = event.getEmail();
+        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, mCurrentUserEmail);
+    }
 }
 

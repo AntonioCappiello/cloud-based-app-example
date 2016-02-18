@@ -42,3 +42,4 @@ Thumbs.db
 #API secret and keys
 app/fabric.properties
 gradle.properties
+app/src/main/res/values/keys.xml

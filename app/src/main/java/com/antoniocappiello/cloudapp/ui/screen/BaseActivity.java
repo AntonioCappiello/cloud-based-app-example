@@ -64,6 +64,7 @@ public class BaseActivity extends AppCompatActivity {
     public void logOut() {
         Logger.d("Logging out");
         mBackendAdapter.logOut();
+        finish();
     }
 
 }

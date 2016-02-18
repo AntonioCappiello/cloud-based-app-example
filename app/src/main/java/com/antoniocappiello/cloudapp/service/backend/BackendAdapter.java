@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.action.Action;
+import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 
@@ -42,7 +43,5 @@ public interface BackendAdapter<T> {
 
     void updateItemInUserList(String itemId, T item);
 
-    void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken firebaseOAuthToken);
-
-    void setCurrentUserEmail(String currentUserEmail);
+    void authenticateWithOAuthToken(AuthProviderType authProviderType, String token);
 }
