@@ -2,7 +2,7 @@ package com.antoniocappiello.cloudapp.service.auth;
 
 import android.content.Intent;
 
-import com.antoniocappiello.cloudapp.service.auth.google.GoogleAuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.provider.google.GoogleAuthProvider;
 
 import java.util.HashMap;
 import java.util.Map;

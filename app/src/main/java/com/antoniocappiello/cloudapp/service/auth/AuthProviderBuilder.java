@@ -3,7 +3,6 @@ package com.antoniocappiello.cloudapp.service.auth;
 import android.app.Activity;
 import android.view.View;
 
-import com.antoniocappiello.cloudapp.service.auth.google.GoogleAuthProvider;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public abstract class AuthProviderBuilder {

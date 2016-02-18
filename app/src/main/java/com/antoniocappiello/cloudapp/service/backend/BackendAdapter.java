@@ -10,6 +10,7 @@ import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -43,5 +44,7 @@ public interface BackendAdapter<T> {
 
     void updateItemInUserList(String itemId, T item);
 
-    void authenticateWithOAuthToken(AuthProviderType authProviderType, String token);
+    void authenticateWithOAuthToken(AuthProviderType authProviderType, String token, Account account);
+
+    void authenticateWithOAuthToken(AuthProviderType authProviderType, Map<String, String> options, Account account);
 }

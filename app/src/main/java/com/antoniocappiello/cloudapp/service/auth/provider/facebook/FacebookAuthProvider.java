@@ -1,14 +1,15 @@
-package com.antoniocappiello.cloudapp.service.auth.facebook;
+package com.antoniocappiello.cloudapp.service.auth.provider.facebook;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
+import com.antoniocappiello.cloudapp.Constants;
+import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderBuilder;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
-import com.antoniocappiello.cloudapp.service.event.UpdateCurrentUserEmailEvent;
 import com.antoniocappiello.cloudapp.service.utils.AppInfoUtils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -69,13 +70,14 @@ public class FacebookAuthProvider implements AuthProvider {
                                 String fbId = user.optString("id");
 
                                 if(email == null || email.isEmpty()){ //if someone signed up for Facebook with a phone number instead of an email address, the email field may be empty.
-                                    email = fbId + "@facebookWithNoEmail.com";
+                                    email = fbId + Constants.NO_FACEBOOK_EMAIL;
                                 }
 
+                                Account account = new Account(name, email, "");
+
                                 AccessToken accessToken = loginResult.getAccessToken();
-                                EventBus.getDefault().post(new UpdateCurrentUserEmailEvent(email));
                                 if(accessToken != null) {
-                                    mOAuthTokenHandler.onOAuthSuccess(accessToken.getToken().toString());
+                                    mOAuthTokenHandler.onOAuthSuccess(accessToken.getToken().toString(), account);
                                 }
                                 else {
                                     mOAuthTokenHandler.onOAuthFailure("token is null");

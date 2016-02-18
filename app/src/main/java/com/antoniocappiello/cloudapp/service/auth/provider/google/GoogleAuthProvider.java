@@ -1,4 +1,4 @@
-package com.antoniocappiello.cloudapp.service.auth.google;
+package com.antoniocappiello.cloudapp.service.auth.provider.google;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,11 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
+import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderBuilder;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
-import com.antoniocappiello.cloudapp.service.event.UpdateCurrentUserEmailEvent;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -81,16 +81,19 @@ public class GoogleAuthProvider implements AuthProvider, GoogleApiClient.Connect
         Logger.d("handleSignInResult:" + result.isSuccess() + "\n" + result.getStatus().getStatusMessage());
         if (result != null && result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
+
             String personName = acct.getDisplayName();
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
+
+            Account account = new Account(personName, personEmail, "");
+
             Logger.d("email " + acct.getEmail() + "\n name " + acct.getDisplayName() + "\n all " + acct.toString());
 
-            EventBus.getDefault().post(new UpdateCurrentUserEmailEvent(personEmail));
             GoogleOAuthTask googleOAuthTask = new GoogleOAuthTask();
             googleOAuthTask.setContext(mActivity);
-            googleOAuthTask.setHandler(mOAuthTokenHandler);
+            googleOAuthTask.setHandler(mOAuthTokenHandler, account);
             googleOAuthTask.execute(acct.getEmail());
         }
     }

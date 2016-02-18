@@ -12,7 +12,6 @@ import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.service.action.Action;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
-import com.antoniocappiello.cloudapp.service.event.UpdateCurrentUserEmailEvent;
 import com.antoniocappiello.cloudapp.service.utils.EmailEncoder;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,6 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
-import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.orhanobut.logger.Logger;
 import com.pixplicity.easyprefs.library.Prefs;
 import com.soikonomakis.rxfirebase.RxFirebase;
@@ -249,13 +247,22 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     }
 
     @Override
-    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token) {
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), token, createAuthWithTokenResultHandler(account));
+    }
 
-        Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+    @Override
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, Map<String, String> options, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), options, createAuthWithTokenResultHandler(account));
+    }
+
+    private Firebase.AuthResultHandler createAuthWithTokenResultHandler(Account account) {
+        return new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 Logger.d("onAuthenticated");
-                addUidAndUserMapping((String) authData.getUid(), new Account("username", mCurrentUserEmail, ""), false);
+                updateCurrentUserEmail(account.getUserEmail());
+                addUidAndUserMapping((String) authData.getUid(), account, false);
             }
 
             @Override
@@ -263,21 +270,11 @@ public class FirebaseBackend implements BackendAdapter<Item> {
                 Logger.d("onAuthenticationError " + firebaseError.toString());
             }
         };
+    }
 
-        FirebaseOAuthToken firebaseOAuthToken = new FirebaseOAuthToken(authProviderType.getProviderName(), token);
-
-        if (firebaseOAuthToken.mode == FirebaseOAuthToken.SIMPLE) {
-            // Simple mode is used for Facebook and Google auth
-            refRoot.authWithOAuthToken(firebaseOAuthToken.provider, firebaseOAuthToken.token, authResultHandler);
-        } else if (firebaseOAuthToken.mode == FirebaseOAuthToken.COMPLEX) {
-            // Complex mode is used for Twitter auth
-            Map<String, String> options = new HashMap<>();
-            options.put("oauth_token", firebaseOAuthToken.token);
-            options.put("oauth_token_secret", firebaseOAuthToken.secret);
-            options.put("user_id", firebaseOAuthToken.uid);
-
-            refRoot.authWithOAuthToken(firebaseOAuthToken.provider, options, authResultHandler);
-        }
+    private void updateCurrentUserEmail(String email) {
+        mCurrentUserEmail = email;
+        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, email);
     }
 
     private void sendConfirmationEmailWithNewPassword(Map<String, Object> result, Account account, ProgressDialog signUpProgressDialog, Action onSignUpSucceeded) {
@@ -356,11 +353,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     public void logOut() {
         refRoot.unauth();
         cleanup();
-    }
-
-    public void onEvent(UpdateCurrentUserEmailEvent event){
-        mCurrentUserEmail = event.getEmail();
-        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, mCurrentUserEmail);
+        mCurrentUserEmail = null;
     }
 }
 
