@@ -1,9 +1,10 @@
-package com.antoniocappiello.cloudapp.service.auth.google;
+package com.antoniocappiello.cloudapp.service.auth.provider.google;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -14,6 +15,7 @@ public class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
 
     private Context mContext;
     private OAuthTokenHandler mHandler;
+    private Account mAccount;
 
     protected String doInBackground(String... emails) {
         String token = "";
@@ -36,13 +38,16 @@ public class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
     public void setContext(Context context) {
         mContext = context;
     }
-    public void setHandler(OAuthTokenHandler handler) { mHandler = handler; }
+    public void setHandler(OAuthTokenHandler handler, Account account) {
+        mHandler = handler;
+        mAccount = account;
+    }
 
     protected void onPostExecute(String token) {
         if (token.equals("")) {
             mHandler.onOAuthFailure("Fetching OAuth token from Google failed");
         } else {
-            mHandler.onOAuthSuccess(token);
+            mHandler.onOAuthSuccess(token, mAccount);
         }
     }
 }

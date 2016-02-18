@@ -18,9 +18,10 @@ import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
 import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.service.auth.AuthService;
-import com.antoniocappiello.cloudapp.service.auth.facebook.FacebookAuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.google.GoogleAuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.provider.facebook.FacebookAuthProvider;
+import com.antoniocappiello.cloudapp.service.auth.provider.google.GoogleAuthProvider;
 import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
+import com.antoniocappiello.cloudapp.service.auth.provider.twitter.TwitterAuthProvider;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
@@ -43,10 +44,13 @@ public class LoginActivity extends BaseActivity {
     EditText mEditTextPasswordInput;
 
     @Bind(R.id.button_sign_in_with_google)
-    View mButtonSignInVithGoogle;
+    View mButtonSignInWithGoogle;
 
     @Bind(R.id.button_sign_in_with_facebook)
-    View mButtonSignInVithFacebook;
+    View mButtonSignInWithFacebook;
+
+    @Bind(R.id.button_sign_in_with_twitter)
+    View mButtonSignInWithTwitter;
 
     @Inject
     BackendAdapter mBackendAdapter;
@@ -67,9 +71,15 @@ public class LoginActivity extends BaseActivity {
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
 
+        AuthProvider twitterAuthProvider = new TwitterAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithTwitter)
+                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.TWITTER))
+                .build();
+
         AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
                 .activity(this)
-                .signInView(mButtonSignInVithGoogle)
+                .signInView(mButtonSignInWithGoogle)
                 .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.GOOGLE))
                 .connectionCallback(getGoogleConnectionCallback())
                 .onConnectionFailedListener(getGoogleOnConnectionFailedListener())
@@ -77,13 +87,14 @@ public class LoginActivity extends BaseActivity {
 
         AuthProvider facebookAuthProvider = new FacebookAuthProvider.Builder()
                 .activity(this)
-                .signInView(mButtonSignInVithFacebook)
+                .signInView(mButtonSignInWithFacebook)
                 .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.FACEBOOK))
                 .build();
 
         mAuthService = new AuthService()
                 .enableAuthProvider(googleAuthProvider)
-                .enableAuthProvider(facebookAuthProvider);
+                .enableAuthProvider(facebookAuthProvider)
+                .enableAuthProvider(twitterAuthProvider);
     }
 
     private OAuthTokenHandler createOAuthTaskHandler(AuthProviderType authProviderType) {
