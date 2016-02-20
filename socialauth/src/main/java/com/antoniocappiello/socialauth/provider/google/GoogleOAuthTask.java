@@ -1,11 +1,19 @@
-package com.antoniocappiello.cloudapp.service.auth.provider.google;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:32 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
+
+package com.antoniocappiello.socialauth.provider.google;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
+
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.model.Account;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;

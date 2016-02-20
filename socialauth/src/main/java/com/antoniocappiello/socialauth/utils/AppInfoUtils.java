@@ -1,4 +1,11 @@
-package com.antoniocappiello.cloudapp.service.utils;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:43 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
+
+package com.antoniocappiello.socialauth.utils;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;

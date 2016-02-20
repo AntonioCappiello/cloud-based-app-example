@@ -1,0 +1,45 @@
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:31 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/20/16 12:31 PM
+ */
+
+apply plugin: 'com.android.library'
+
+final PLAY_SERVICES_AUTH_VERSION = "8.4.0"
+final FACEBOOK_VERSION = "4.0.0"
+final TWITTER_VERSION = '4.0.2'
+final LOGGER_VERSION = '1.10'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+
+    compile "com.orhanobut:logger:${LOGGER_VERSION}"
+    compile "com.google.android.gms:play-services-auth:${PLAY_SERVICES_AUTH_VERSION}"
+    compile "com.facebook.android:facebook-android-sdk:${FACEBOOK_VERSION}"
+    compile "org.twitter4j:twitter4j-core:${TWITTER_VERSION}"
+}
+
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'

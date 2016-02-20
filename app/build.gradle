@@ -17,8 +17,6 @@ final RX_FIREBASE = '1.0.0'
 final GSON_VERSION = '2.4'
 final EVENTBUS_VERSION = '3.0.0'
 final PLAY_SERVICES_AUTH_VERSION = "8.4.0"
-final FACEBOOK_VERSION = "4.0.0"
-final TWITTER_VERSION = '4.0.2'
 
 android {
     compileSdkVersion 23
@@ -86,9 +84,8 @@ dependencies {
     compile "org.greenrobot:eventbus:${EVENTBUS_VERSION}"
 
     compile "com.google.android.gms:play-services-auth:${PLAY_SERVICES_AUTH_VERSION}"
-    compile "com.facebook.android:facebook-android-sdk:${FACEBOOK_VERSION}"
-    compile "org.twitter4j:twitter4j-core:${TWITTER_VERSION}"
 
+    compile project(path: ':socialauth')
 }
 
 apply plugin: 'com.google.gms.google-services'

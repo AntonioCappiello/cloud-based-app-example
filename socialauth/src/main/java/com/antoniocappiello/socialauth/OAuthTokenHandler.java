@@ -1,7 +1,14 @@
-package com.antoniocappiello.cloudapp.service.auth;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:32 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
 
-import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
+package com.antoniocappiello.socialauth;
+
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
 import com.orhanobut.logger.Logger;
 
 import java.util.Map;

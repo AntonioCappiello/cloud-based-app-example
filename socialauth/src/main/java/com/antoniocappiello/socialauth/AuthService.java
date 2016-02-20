@@ -1,8 +1,17 @@
-package com.antoniocappiello.cloudapp.service.auth;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:32 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
+
+package com.antoniocappiello.socialauth;
 
 import android.content.Intent;
 
-import com.antoniocappiello.cloudapp.service.auth.provider.google.GoogleAuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
+import com.antoniocappiello.socialauth.provider.google.GoogleAuthProvider;
 
 import java.util.HashMap;
 import java.util.Map;

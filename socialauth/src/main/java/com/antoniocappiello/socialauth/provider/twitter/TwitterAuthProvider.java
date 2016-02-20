@@ -1,15 +1,22 @@
-package com.antoniocappiello.cloudapp.service.auth.provider.twitter;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:32 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
+
+package com.antoniocappiello.socialauth.provider.twitter;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
-import com.antoniocappiello.cloudapp.Constants;
-import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderBuilder;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
-import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.Constants;
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProviderBuilder;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +58,17 @@ public class TwitterAuthProvider implements AuthProvider {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == TwitterActions.SUCCESS) {
-            Map<String, String> options = new HashMap<>();
-            options.put("oauth_token", data.getStringExtra("oauth_token"));
-            options.put("oauth_token_secret", data.getStringExtra("oauth_token_secret"));
-            options.put("user_id", data.getStringExtra("user_id"));
 
-            Account account = new Account(data.getStringExtra("user_id"), data.getStringExtra("user_id") + Constants.NO_TWITTER_EMAIL, "");
+            String oauthToken = data.getStringExtra(Constants.OAUTH_TOKEN);
+            String ouathTokenSecret = data.getStringExtra(Constants.OAUTH_TOKEN_SECRET);
+            String userId = data.getStringExtra(Constants.USER_ID);
+            Account account = new Account(userId, userId, userId + Constants.NO_TWITTER_EMAIL, "");
+
+            Map<String, String> options = new HashMap<>();
+            options.put(Constants.OAUTH_TOKEN, oauthToken);
+            options.put(Constants.OAUTH_TOKEN_SECRET, ouathTokenSecret);
+            options.put(Constants.USER_ID, userId);
+
             mOAuthTokenHandler.onOAuthSuccess(options, account);
         } else if (resultCode == TwitterActions.USER_ERROR) {
             mOAuthTokenHandler.onOAuthFailure("USER_ERROR: " + data.getStringExtra("error"));
@@ -66,7 +78,7 @@ public class TwitterAuthProvider implements AuthProvider {
         }
     }
 
-    public static class Builder extends AuthProviderBuilder{
+    public static class Builder extends AuthProviderBuilder {
         @Override
         public TwitterAuthProvider build() {
             if(mActivity == null || mSignInView == null || mOAuthTokenHandler == null){

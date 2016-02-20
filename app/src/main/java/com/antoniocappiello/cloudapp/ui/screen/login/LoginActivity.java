@@ -15,16 +15,16 @@ import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.service.action.Action;
 import com.antoniocappiello.cloudapp.service.action.ShowItemListScreenAction;
 import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
-import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
-import com.antoniocappiello.cloudapp.service.auth.AuthService;
-import com.antoniocappiello.cloudapp.service.auth.provider.facebook.FacebookAuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.provider.google.GoogleAuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
-import com.antoniocappiello.cloudapp.service.auth.provider.twitter.TwitterAuthProvider;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
+import com.antoniocappiello.socialauth.AuthService;
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.provider.AuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
+import com.antoniocappiello.socialauth.provider.facebook.FacebookAuthProvider;
+import com.antoniocappiello.socialauth.provider.google.GoogleAuthProvider;
+import com.antoniocappiello.socialauth.provider.twitter.TwitterAuthProvider;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.orhanobut.logger.Logger;
 
@@ -71,34 +71,50 @@ public class LoginActivity extends BaseActivity {
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
 
+        /**
+         * Create TWITTER Authentication Provider
+         */
+        OAuthTokenHandler twitterOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.TWITTER, mBackendAdapter);
+
         AuthProvider twitterAuthProvider = new TwitterAuthProvider.Builder()
                 .activity(this)
                 .signInView(mButtonSignInWithTwitter)
-                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.TWITTER))
+                .oAuthTokenHandler(twitterOAuthTokenHandler)
                 .build();
 
-        AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
-                .activity(this)
-                .signInView(mButtonSignInWithGoogle)
-                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.GOOGLE))
-                .connectionCallback(getGoogleConnectionCallback())
-                .onConnectionFailedListener(getGoogleOnConnectionFailedListener())
-                .build();
+        /**
+         * Create FACEBOOK Authentication Provider
+         */
+        OAuthTokenHandler facebookOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.FACEBOOK, mBackendAdapter);
 
         AuthProvider facebookAuthProvider = new FacebookAuthProvider.Builder()
                 .activity(this)
                 .signInView(mButtonSignInWithFacebook)
-                .oAuthTaskHandler(createOAuthTaskHandler(AuthProviderType.FACEBOOK))
+                .oAuthTokenHandler(facebookOAuthTokenHandler)
                 .build();
 
+        /**
+         * Create GOOGLE Authentication Provider
+         */
+        OAuthTokenHandler googleOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.GOOGLE, mBackendAdapter);
+        GoogleApiClient.ConnectionCallbacks googleConnectionCallback = getGoogleConnectionCallback();
+        GoogleApiClient.OnConnectionFailedListener googleOnConnectionFailedListener = getGoogleOnConnectionFailedListener();
+
+        AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithGoogle)
+                .oAuthTokenHandler(googleOAuthTokenHandler)
+                .connectionCallback(googleConnectionCallback)
+                .onConnectionFailedListener(googleOnConnectionFailedListener)
+                .build();
+
+        /**
+         * Create Authentication Service with Twitter, Facebook and Google Auth providers
+         */
         mAuthService = new AuthService()
                 .enableAuthProvider(googleAuthProvider)
                 .enableAuthProvider(facebookAuthProvider)
                 .enableAuthProvider(twitterAuthProvider);
-    }
-
-    private OAuthTokenHandler createOAuthTaskHandler(AuthProviderType authProviderType) {
-        return new OAuthTokenHandler(authProviderType, mBackendAdapter);
     }
 
     private void initPasswordInputListener() {

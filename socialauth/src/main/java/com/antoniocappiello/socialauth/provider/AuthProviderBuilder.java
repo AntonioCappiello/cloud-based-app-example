@@ -1,8 +1,16 @@
-package com.antoniocappiello.cloudapp.service.auth;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:40 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/20/16 12:33 PM
+ */
+
+package com.antoniocappiello.socialauth.provider;
 
 import android.app.Activity;
 import android.view.View;
 
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public abstract class AuthProviderBuilder {
@@ -22,7 +30,7 @@ public abstract class AuthProviderBuilder {
         return this;
     }
 
-    public AuthProviderBuilder oAuthTaskHandler(OAuthTokenHandler oAuthTokenHandler) {
+    public AuthProviderBuilder oAuthTokenHandler(OAuthTokenHandler oAuthTokenHandler) {
         mOAuthTokenHandler = oAuthTokenHandler;
         return this;
     }
