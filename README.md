@@ -2,10 +2,9 @@
 
 This is a sample app which shows:
 
-1. how to make an app decoupled by its backend, thanks to a **BackendAdapter** interface;
-2. and how to integrate the most common social media authentication providers, like Facebook, Twitter and Google, via the **Social Auth** library.
+1. how to make an app decoupled by its backend, thanks to a **BackendAdapter** interface; ![alt text](http://blog.raremile.com/wp-content/uploads/2014/07/Baas.png)
 
-![alt text](http://blog.raremile.com/wp-content/uploads/2014/07/Baas.png)
+2. and how to integrate the most common social media authentication providers, like Facebook, Twitter and Google, via the **Social Auth** library.
 
 ![alt text](http://blog.ionic.io/wp-content/uploads/2015/06/firebase-ionic-user-auth.png)
 
