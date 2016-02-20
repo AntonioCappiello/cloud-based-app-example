@@ -25,7 +25,7 @@ The *FirebaseTestEmail* and *FirebaseTestPw* are used only to facilitate the log
 To facilitate the authentication flow with Facebook, Twitter, and Google, this cloud-based-app sample uses the [*Social Auth*](https://bintray.com/antoniocappiello/maven/socialauth/) library. This library is [open-source](https://github.com/AntonioCappiello/cloud-based-app-example/tree/feature/convert_auth_package_in_library/socialauth/src/main/java/com/antoniocappiello/socialauth) and is partially inspired on the [Firebase-UI library](https://github.com/firebase/FirebaseUI-Android). The Firebase-UI library provides login to social media only via a predefined pop-up dialog and it doesn't help to transfer the authentication information and the current firebase ref from one activity to another of our app (in case we are building a multi-activity app).
 **The *Social Auth* library**, instead, **allows you to use your custom UI to login to social media, and it is decoupled from your backend implementation thanks to the BackendAdapter interface**. For example, if you decide to use Firebase as your backend, you can create a FirebaseBackend class which extends the BackendAdapter and which is available in your whole app, by removing the need to transfer *refs* and *auth* information among activities. For more information, see the could-based-app example of this repo.
 
-### Social Authentication service usage
+### Usage
 
 The Social Auth library is available on jCenter, therefore, it could easily be imported into your app with the following dependency:
 
