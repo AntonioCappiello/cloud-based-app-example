@@ -3,7 +3,9 @@ package com.antoniocappiello.cloudapp.ui.screen.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -11,11 +13,19 @@ import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.service.action.Action;
-import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.action.ShowItemListScreenAction;
+import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
+import com.antoniocappiello.socialauth.AuthService;
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.provider.AuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
+import com.antoniocappiello.socialauth.provider.facebook.FacebookAuthProvider;
+import com.antoniocappiello.socialauth.provider.google.GoogleAuthProvider;
+import com.antoniocappiello.socialauth.provider.twitter.TwitterAuthProvider;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -33,12 +43,22 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.edit_text_password)
     EditText mEditTextPasswordInput;
 
+    @Bind(R.id.button_sign_in_with_google)
+    View mButtonSignInWithGoogle;
+
+    @Bind(R.id.button_sign_in_with_facebook)
+    View mButtonSignInWithFacebook;
+
+    @Bind(R.id.button_sign_in_with_twitter)
+    View mButtonSignInWithTwitter;
+
     @Inject
     BackendAdapter mBackendAdapter;
 
     private Action mOnSignInSucceeded;
     private Action mOnSignInFailed;
     private ProgressDialog mAuthProgressDialog;
+    private AuthService mAuthService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +70,51 @@ public class LoginActivity extends BaseActivity {
         mAuthProgressDialog = ProgressDialogFactory.getSignInProgressDialog(this);
         mOnSignInSucceeded = new ShowItemListScreenAction(this);
         mOnSignInFailed = new ShowToastSignInFailedAction(this);
+
+        /**
+         * Create TWITTER Authentication Provider
+         */
+        OAuthTokenHandler twitterOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.TWITTER, mBackendAdapter);
+
+        AuthProvider twitterAuthProvider = new TwitterAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithTwitter)
+                .oAuthTokenHandler(twitterOAuthTokenHandler)
+                .build();
+
+        /**
+         * Create FACEBOOK Authentication Provider
+         */
+        OAuthTokenHandler facebookOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.FACEBOOK, mBackendAdapter);
+
+        AuthProvider facebookAuthProvider = new FacebookAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithFacebook)
+                .oAuthTokenHandler(facebookOAuthTokenHandler)
+                .build();
+
+        /**
+         * Create GOOGLE Authentication Provider
+         */
+        OAuthTokenHandler googleOAuthTokenHandler = new OAuthTokenHandler(AuthProviderType.GOOGLE, mBackendAdapter);
+        GoogleApiClient.ConnectionCallbacks googleConnectionCallback = getGoogleConnectionCallback();
+        GoogleApiClient.OnConnectionFailedListener googleOnConnectionFailedListener = getGoogleOnConnectionFailedListener();
+
+        AuthProvider googleAuthProvider = new GoogleAuthProvider.Builder()
+                .activity(this)
+                .signInView(mButtonSignInWithGoogle)
+                .oAuthTokenHandler(googleOAuthTokenHandler)
+                .connectionCallback(googleConnectionCallback)
+                .onConnectionFailedListener(googleOnConnectionFailedListener)
+                .build();
+
+        /**
+         * Create Authentication Service with Twitter, Facebook and Google Auth providers
+         */
+        mAuthService = new AuthService()
+                .enableAuthProvider(googleAuthProvider)
+                .enableAuthProvider(facebookAuthProvider)
+                .enableAuthProvider(twitterAuthProvider);
     }
 
     private void initPasswordInputListener() {
@@ -82,15 +147,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     @OnClick(R.id.button_sign_in_with_email_and_password)
-    public void signIn() {
-        signInWithEmailAndPassword();
-    }
-
-    @OnClick(R.id.text_view_sign_up)
-    public void signUp() {
-        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
-    }
-
     public void signInWithEmailAndPassword() {
         String email, password;
         if(BuildConfig.FLAVOR.equalsIgnoreCase("dev")) {
@@ -107,6 +163,11 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.text_view_sign_up)
+    public void signUp() {
+        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
+    }
+
     private boolean isEmailValid(String email) {
         if (email.equals("")) {
             mEditTextEmailInput.setError(getString(R.string.error_cannot_be_empty));
@@ -121,5 +182,35 @@ public class LoginActivity extends BaseActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mAuthService.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void logOut() {
+        super.logOut();
+        mAuthService.logOut();
+    }
+
+    public GoogleApiClient.ConnectionCallbacks getGoogleConnectionCallback() {
+        return new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+                Logger.d("onConnected");
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+                Logger.d("onConnectionSuspended");
+            }
+        };
+    }
+
+    public GoogleApiClient.OnConnectionFailedListener getGoogleOnConnectionFailedListener() {
+        return connectionResult -> Logger.e(connectionResult.toString());
     }
 }

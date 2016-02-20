@@ -7,13 +7,13 @@ import android.widget.EditText;
 import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.action.OpenEmailAppAction;
+import com.antoniocappiello.cloudapp.service.action.ShowToastSignInFailedAction;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
 import com.antoniocappiello.cloudapp.service.utils.PasswordGenerator;
 import com.antoniocappiello.cloudapp.ui.customwidget.ProgressDialogFactory;
 import com.antoniocappiello.cloudapp.ui.screen.BaseActivity;
+import com.antoniocappiello.socialauth.model.Account;
 import com.orhanobut.logger.Logger;
 
 import javax.inject.Inject;
@@ -65,7 +65,7 @@ public class CreateAccountActivity extends BaseActivity {
         if (!isEmailValid(userEmail) || !isUserNameValid(userName))
             return;
 
-        Account account = new Account(userName, userEmail, password);
+        Account account = new Account("", userName, userEmail, password);
 
         mBackendAdapter.createUser(account, ProgressDialogFactory.getSignUpProgressDialog(this), new ShowToastSignInFailedAction(this), new OpenEmailAppAction(this));
 

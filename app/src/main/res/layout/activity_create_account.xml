@@ -5,7 +5,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:background="@color/colorPrimary"
-            tools:context=".ui.screen.login.CreateAccountActivity">
+            tools:activity=".ui.screen.login.CreateAccountActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout_create_account_activity"

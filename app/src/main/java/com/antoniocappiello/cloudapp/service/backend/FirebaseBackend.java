@@ -7,12 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.service.action.Action;
 import com.antoniocappiello.cloudapp.service.utils.EmailEncoder;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -42,7 +43,6 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     private static final String LIST = "list";
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
-    private static final String UID_MAPPING = "uid_mapping";
     private static final String USERS = "users";
     public static final String UID_MAPPINGS = "uidMappings";
     private static final String FIREBASE_PROPERTY_IS_EMAIL_CONFIRMED = "emailConfirmed";
@@ -59,10 +59,11 @@ public class FirebaseBackend implements BackendAdapter<Item> {
 
     public FirebaseBackend(Context context) {
         Firebase.setAndroidContext(context);
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
         refRoot = new Firebase(BuildConfig.FIREBASE_ROOT_URL);
         refList = refRoot.child(LIST);
         refUsers = refRoot.child(USERS);
-        refUidMapping = refRoot.child(UID_MAPPING);
+        refUidMapping = refRoot.child(UID_MAPPINGS);
         mCurrentUserEmail = Prefs.getString(Constants.KEY_SIGNUP_EMAIL, "");
     }
 
@@ -102,14 +103,12 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
 
         Firebase refUserList = refList.child(EmailEncoder.encodeEmail(mCurrentUserEmail));
-        if (mAdapter == null) {
-            mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
-                @Override
-                public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
-                    itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
-                }
-            };
-        }
+        mAdapter = new FirebaseRecyclerAdapter<Item, ItemViewHolder>(Item.class, R.layout.item, ItemViewHolder.class, refUserList) {
+            @Override
+            public void populateViewHolder(ItemViewHolder itemViewHolder, Item item, int position) {
+                itemViewHolder.updateView(mAdapter.getRef(position).getKey(), item);
+            }
+        };
         return mAdapter;
     }
 
@@ -247,6 +246,27 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
     }
 
+    private Firebase.AuthResultHandler createAuthWithTokenResultHandler(Account account) {
+        return new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Logger.d("onAuthenticated");
+                updateCurrentUserEmail(account.getUserEmail());
+                addUidAndUserMapping((String) authData.getUid(), account, false);
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Logger.d("onAuthenticationError " + firebaseError.toString());
+            }
+        };
+    }
+
+    private void updateCurrentUserEmail(String email) {
+        mCurrentUserEmail = email;
+        Prefs.putString(Constants.KEY_SIGNUP_EMAIL, email);
+    }
+
     private void sendConfirmationEmailWithNewPassword(Map<String, Object> result, Account account, ProgressDialog signUpProgressDialog, Action onSignUpSucceeded) {
         refRoot.resetPassword(account.getUserEmail(), new Firebase.ResultHandler() {
             @Override
@@ -259,7 +279,7 @@ public class FirebaseBackend implements BackendAdapter<Item> {
                         signUpProgressDialog.dismiss();
                         Prefs.putString(Constants.KEY_SIGNUP_EMAIL, account.getUserEmail());
                         mCurrentUserEmail = account.getUserEmail();
-                        addUidAndUserMapping((String) result.get("uid"), account);
+                        addUidAndUserMapping((String) result.get("uid"), account, true);
                         onSignUpSucceeded.execute();
                     }
 
@@ -279,24 +299,24 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         });
     }
 
-    private void addUidAndUserMapping(final String authUserId, Account account) {
+    private void addUidAndUserMapping(final String authUserId, Account account, boolean logoutImmediately) {
         final String encodedEmail = EmailEncoder.encodeEmail(account.getUserEmail());
-
         HashMap<String, Object> uidAndUserMapping = createUidAndUserMap(encodedEmail, authUserId, account);
 
         // Try to update the database; if there is already a user, this will fail
-        refRoot.updateChildren(uidAndUserMapping, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                Logger.d("user created");
-                if (firebaseError != null) {
-                    // Try just making a uid mapping
-                    refUidMapping.child(authUserId).setValue(encodedEmail);
-                }
+        refRoot.updateChildren(uidAndUserMapping, (firebaseError, firebase) -> {
+            if( firebaseError == null) {
+                Logger.d("user and uidMapping updated");
+            }
+            else if (firebaseError != null) {
+                Logger.e("error in creating user and uid mapping: " + firebaseError.toString());
+                Logger.d("Try just making a uid mapping");
+                refUidMapping.child(authUserId).setValue(encodedEmail);
+            }
+            if(logoutImmediately) {
                 logOut();
             }
         });
-
     }
 
     private HashMap<String, Object> createUidAndUserMap(String encodedEmail, String authUserId, Account account) {
@@ -322,7 +342,19 @@ public class FirebaseBackend implements BackendAdapter<Item> {
     @Override
     public void logOut() {
         refRoot.unauth();
+        cleanup();
+        mCurrentUserEmail = null;
     }
 
+    @Override
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), token, createAuthWithTokenResultHandler(account));
+    }
+
+    @Override
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, Map<String, String> options, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), options, createAuthWithTokenResultHandler(account));
+    }
+    
 }
 

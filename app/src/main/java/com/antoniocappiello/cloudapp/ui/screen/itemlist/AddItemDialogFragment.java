@@ -15,6 +15,7 @@ import com.antoniocappiello.cloudapp.App;
 import com.antoniocappiello.cloudapp.R;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.service.backend.BackendAdapter;
+import com.antoniocappiello.cloudapp.service.validator.ItemPropertyValidator;
 
 import java.util.Date;
 
@@ -86,10 +87,10 @@ public class AddItemDialogFragment extends DialogFragment {
     private void addItem() {
         String itemName = mEditTextItemName.getText().toString();
         String itemDescription = mEditTextItemDescription.getText().toString();
-        if (itemName.isEmpty()) {
+        if (!ItemPropertyValidator.isNameValid(itemName)) {
             mEditTextItemName.setError(getString(R.string.error_cannot_be_empty));
         }
-        else if (itemDescription.isEmpty()){
+        else if (!ItemPropertyValidator.isDescriptionValid(itemDescription)){
             mEditTextItemDescription.setError(getString(R.string.error_cannot_be_empty));
         }
         else {

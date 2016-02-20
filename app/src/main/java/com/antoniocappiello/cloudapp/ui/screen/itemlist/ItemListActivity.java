@@ -62,7 +62,7 @@ public class ItemListActivity extends BaseActivity {
     private void initRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mBackendAdapter.getRecyclerViewAdapterForUserItemList());
+        mRecyclerView.swapAdapter(mBackendAdapter.getRecyclerViewAdapterForUserItemList(), false);
     }
 
     private void loadData() {

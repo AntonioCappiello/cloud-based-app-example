@@ -1,0 +1,48 @@
+apply plugin: 'com.jfrog.bintray'
+
+version = '0.0.1' /*
+ * Created by Antonio Cappiello on 2/20/16 3:12 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/20/16 3:12 PM
+ */ //YOUR LIBRARY VERSION
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'socialauth' //YOUR PACKAGE NAME
+        desc = 'Library which offer an authentication service class configurable with social media authentication provider like Facebook, Twitter and Gmail.' // YOUR LIBRARY DESCRIPTION
+        websiteUrl = 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR SITE
+        vcsUrl = 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR GIT REPO
+        licenses = ["Apache-2.0"] // A LIST OF YOUR LICENCES
+        publish = true
+        publicDownloadNumbers = true
+    }
+}

@@ -3,15 +3,17 @@ package com.antoniocappiello.cloudapp.service.backend;
 import android.app.ProgressDialog;
 import android.support.v7.widget.RecyclerView;
 
-import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.service.action.Action;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
-public interface BackendAdapter<T> {
+public interface BackendAdapter<T> extends com.antoniocappiello.socialauth.BackendAdapter{
 
     void addItemToUserList(T item);
 
@@ -40,4 +42,5 @@ public interface BackendAdapter<T> {
     String getCurrentUserEmail();
 
     void updateItemInUserList(String itemId, T item);
+
 }

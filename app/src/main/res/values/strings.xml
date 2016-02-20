@@ -28,4 +28,6 @@
     <string name="hint_enter_item_description">Enter Item description</string>
     <string name="add_new_item">Add new Item</string>
     <string name="edit_item">Edit Item</string>
+    <string name="text_or_sign_in_with">Sign in with</string>
+    <string name="or">or</string>
 </resources>
