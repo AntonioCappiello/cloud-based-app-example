@@ -1,16 +1,23 @@
-package com.antoniocappiello.cloudapp.service.auth.provider.facebook;
+/*
+ * Created by Antonio Cappiello on 2/20/16 12:32 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/18/16 5:40 PM
+ */
+
+package com.antoniocappiello.socialauth.provider.facebook;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
-import com.antoniocappiello.cloudapp.Constants;
-import com.antoniocappiello.cloudapp.model.Account;
-import com.antoniocappiello.cloudapp.service.auth.AuthProvider;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderBuilder;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
-import com.antoniocappiello.cloudapp.service.auth.OAuthTokenHandler;
-import com.antoniocappiello.cloudapp.service.utils.AppInfoUtils;
+import com.antoniocappiello.socialauth.Constants;
+import com.antoniocappiello.socialauth.OAuthTokenHandler;
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProvider;
+import com.antoniocappiello.socialauth.provider.AuthProviderBuilder;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
+import com.antoniocappiello.socialauth.utils.AppInfoUtils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -23,7 +30,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.orhanobut.logger.Logger;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -58,7 +64,7 @@ public class FacebookAuthProvider implements AuthProvider {
         mLoginManager.registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
-                    public void onSuccess(LoginResult loginResult) {
+                    public void onSuccess(final LoginResult loginResult) {
                         Logger.d("onSuccess");
                         final AccessToken accessToken = loginResult.getAccessToken();
                         GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -73,7 +79,7 @@ public class FacebookAuthProvider implements AuthProvider {
                                     email = fbId + Constants.NO_FACEBOOK_EMAIL;
                                 }
 
-                                Account account = new Account(name, email, "");
+                                Account account = new Account(fbId, name, email, "");
 
                                 AccessToken accessToken = loginResult.getAccessToken();
                                 if(accessToken != null) {
@@ -116,7 +122,12 @@ public class FacebookAuthProvider implements AuthProvider {
     }
 
     private void setFacebookSignInView(View facebookSignInView) {
-        facebookSignInView.setOnClickListener(v -> login());
+        facebookSignInView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FacebookAuthProvider.this.login();
+            }
+        });
     }
 
     private void login() {

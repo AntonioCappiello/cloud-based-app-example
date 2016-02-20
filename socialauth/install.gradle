@@ -1,0 +1,44 @@
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.antoniocappiello.library' /*
+ * Created by Antonio Cappiello on 2/20/16 3:09 PM
+ * Copyright (c) 2016. All rights reserved.
+ *
+ * Last modified 2/20/16 3:09 PM
+ */ // CREATE A GROUP ID FOR YOUR LIBRARY
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                groupId 'com.antoniocappiello.library' // CREATE A GROUP ID FOR YOUR LIBRARY
+                artifactId 'socialauth' // THE NAME OF YOUR MODULE
+
+                name 'SocialAuth' // YOUR LIBRARY NAME
+                description 'Library which offer an authentication service class configurable with social media authentication provider like Facebook, Twitter and Gmail.' // YOUR LIBRARY DESCRIPTION
+                url 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR SITE
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'AntonioCappiello' //YOUR ID
+                        name 'Antonio Cappiello' //YOUR NAME
+                        email 'antoniocappiello1@gmail.com' //YOUR EMAIL
+                    }
+                }
+                scm {
+                    connection 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR GIT REPO
+                    developerConnection 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR GIT REPO
+                    url 'https://github.com/AntonioCappiello/cloud-based-app-example' // YOUR SITE
+
+                }
+            }
+        }
+    }
+}

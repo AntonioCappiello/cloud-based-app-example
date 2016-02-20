@@ -1,0 +1,10 @@
+<!--
+  ~ Created by Antonio Cappiello on 2/20/16 12:31 PM
+  ~ Copyright (c) 2016. All rights reserved.
+  ~
+  ~ Last modified 2/20/16 12:31 PM
+  -->
+
+<resources>
+    <string name="app_name">SocialAuth</string>
+</resources>

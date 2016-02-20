@@ -35,7 +35,7 @@
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
-        <activity android:name=".service.auth.provider.twitter.TwitterPromptActivity" />
+        <activity android:name="com.antoniocappiello.socialauth.provider.twitter.TwitterPromptActivity" />
 
         <meta-data
             android:name="com.antoniocappiello.cloudapp.TwitterKey"

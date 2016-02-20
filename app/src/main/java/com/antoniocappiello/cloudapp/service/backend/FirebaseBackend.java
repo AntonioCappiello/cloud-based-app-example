@@ -7,13 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import com.antoniocappiello.cloudapp.BuildConfig;
 import com.antoniocappiello.cloudapp.Constants;
 import com.antoniocappiello.cloudapp.R;
-import com.antoniocappiello.cloudapp.model.Account;
 import com.antoniocappiello.cloudapp.model.Item;
 import com.antoniocappiello.cloudapp.model.User;
 import com.antoniocappiello.cloudapp.service.action.Action;
-import com.antoniocappiello.cloudapp.service.auth.AuthProviderType;
 import com.antoniocappiello.cloudapp.service.utils.EmailEncoder;
 import com.antoniocappiello.cloudapp.ui.screen.itemlist.ItemViewHolder;
+import com.antoniocappiello.socialauth.model.Account;
+import com.antoniocappiello.socialauth.provider.AuthProviderType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -246,16 +246,6 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         }
     }
 
-    @Override
-    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token, Account account) {
-        refRoot.authWithOAuthToken(authProviderType.getProviderName(), token, createAuthWithTokenResultHandler(account));
-    }
-
-    @Override
-    public void authenticateWithOAuthToken(AuthProviderType authProviderType, Map<String, String> options, Account account) {
-        refRoot.authWithOAuthToken(authProviderType.getProviderName(), options, createAuthWithTokenResultHandler(account));
-    }
-
     private Firebase.AuthResultHandler createAuthWithTokenResultHandler(Account account) {
         return new Firebase.AuthResultHandler() {
             @Override
@@ -355,5 +345,16 @@ public class FirebaseBackend implements BackendAdapter<Item> {
         cleanup();
         mCurrentUserEmail = null;
     }
+
+    @Override
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, String token, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), token, createAuthWithTokenResultHandler(account));
+    }
+
+    @Override
+    public void authenticateWithOAuthToken(AuthProviderType authProviderType, Map<String, String> options, Account account) {
+        refRoot.authWithOAuthToken(authProviderType.getProviderName(), options, createAuthWithTokenResultHandler(account));
+    }
+    
 }
 
