@@ -11,7 +11,7 @@ This is a sample app which shows:
 For the sake of this example I have implemented the backend in [Firebase](https://www.firebase.com/),
 partially using as inspiration the Udacity's course ["Firebase Essentials For Android"](https://www.udacity.com/course/firebase-essentials-for-android--ud009) by Google.
 
-## Instruction to build the project
+## Instructions to build the project
 The app's *build.gradle* files uses three variables to connect to your firebase app. Those variables are not included in the git repo for security reasons, therefore you need to create a gradle.properties file in the root folder of the project with the following variables:
 ```javascript
 FirebaseRootUrl = "https://[YOUR FIREBASE APP NAME AS IN THE DASHBORAD].firebaseio.com/"
