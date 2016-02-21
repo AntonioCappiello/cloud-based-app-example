@@ -89,7 +89,7 @@ You can create social media provider in this way:
 
 As you can see, each authentication provider can be built with a *View* on which will be automatically associated the "Sign In" action.
 
-When the authentication with the specific provider is completed succesfully, one of the methods of the [BackendAdapter](https://github.com/AntonioCappiello/cloud-based-app-example/blob/feature/convert_auth_package_in_library/socialauth/src/main/java/com/antoniocappiello/socialauth/BackendAdapter.java) interface will be invoked. You can use them to trigger UI changes because the user are logged in, or you can add a further step of authentication by using the returned token, in case your backend needs it (like in this sample project where it is used to automatically authenticate to Firebase).
+When the authentication with the specific provider is completed successfully, one of the methods of the [BackendAdapter](https://github.com/AntonioCappiello/cloud-based-app-example/blob/feature/convert_auth_package_in_library/socialauth/src/main/java/com/antoniocappiello/socialauth/BackendAdapter.java) interface will be invoked. You can use them to trigger UI changes because the user are logged in, or you can add a further step of authentication by using the returned token, in case your backend needs it (like in this sample project where it is used to automatically authenticate to Firebase).
 
 ### LogIn via Facebook and Twitter
 
