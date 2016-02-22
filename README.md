@@ -13,7 +13,7 @@ partially using as inspiration the Udacity's course ["Firebase Essentials For An
 
 ## Motivations
 
-Read the motivations about this project on my [blog post] (http://antoniocappiello.com/2016/02/12/getting-started-with-firebase-while-moving-away-from-parse/).
+Read the motivations about this project on my blog posts [part 1] (http://antoniocappiello.com/2016/02/12/getting-started-with-firebase-while-moving-away-from-parse/) and [part 2](http://antoniocappiello.com/2016/02/22/social-media-authentication-for-your-views-and-your-backend/).
 
 ## Instructions to build the project
 The app's *build.gradle* file uses three variables to connect to your firebase app. Those variables are not included in the git repo for security reasons, therefore you need to create a gradle.properties file in the root folder of the project with the following variables:
